@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     QBrush bgBrush(bgPixmap.scaled(view->size(), Qt::KeepAspectRatioByExpanding));
     view->setBackgroundBrush(bgBrush);
 
-    player->setPos(10,500);
+    player->setPos(10,350);
 
     //spawn random enemies
 

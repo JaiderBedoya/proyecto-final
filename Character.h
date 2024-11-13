@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
+#include <QTimer>
 
 class Character : public QObject , public QGraphicsPixmapItem
 {
@@ -16,8 +17,10 @@ private:
     QString name;
     qreal positionX;
     qreal positionY;
-
+    QTimer *movementTimer;
+    qreal movementDirection;
     unsigned short int health;
+    short int directionSprite = 1;
 
 
 public:
@@ -38,7 +41,7 @@ public:
     void setHealth();
 
     void move(int movementX, int movementY);
-    void setSprite(qreal direction);
+    void setSprite();
 
     void keyPressEvent(QKeyEvent* event);
 public slots:
