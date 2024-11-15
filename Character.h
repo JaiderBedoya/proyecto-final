@@ -14,36 +14,37 @@ class Character : public QObject , public QGraphicsPixmapItem
     Q_OBJECT
 
 private:
-    QString name;
-    qreal positionX;
-    qreal positionY;
-    QTimer *movementTimer;
     qreal movementDirection;
     unsigned short int health;
     short int directionSprite = 1;
-
-
-public:
-    QPixmap spriteSheet;
-    QPixmap actualSprite;
-    //Character();
     qreal characterWidth;
     qreal characterHeight;
     int spriteWidth, spriteHeight;
-    Character(qreal characterWidth_,qreal characterHeight_);
-    QString getName();
-    unsigned short int getHealth();
+
+public:
+    QTimer *movementTimer;
+    QPixmap spriteSheet;
+    QPixmap actualSprite;
+    Character();
+    Character(qreal characterWidth_,qreal characterHeight_, const QString spritePath);
+
     int counterSprite = 0;
 
     int coordinateSpriteX = 0, coordinateSpriteY = 0;
+    qreal getMovementDirection();
+    unsigned short int getHealth();
+    short int getDirectionSprite();
+    qreal getCharacterWidth();
+    qreal getCharacterHeight();
+    int getSpriteWidth();
+    int getSpriteHeight();
 
-    void setName();
+
     void setHealth();
-
-    void move(int movementX, int movementY);
     void setSprite();
+    void setDirectionSprite(short int _directionSprite);
+    void setMovementDirection(qreal _movementDirection);
 
-    void keyPressEvent(QKeyEvent* event);
 public slots:
 };
 

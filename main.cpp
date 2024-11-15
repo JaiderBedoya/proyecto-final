@@ -1,5 +1,6 @@
 #include "mainwindow.h"
-#include "Character.h"
+#include "Enemy.h"
+#include "Protagonist.h"
 #include <QApplication>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -20,7 +21,8 @@ int main(int argc, char *argv[])
 
 
     //Create a item in this case is a rectangle
-    Character *player = new Character(70.33,88.75);
+    Protagonist *player = new Protagonist(70.33,88.75,":/imagesEmancipation/bartConAtaque.png");
+    Enemy *enemy = new Enemy(90,99,":/imagesEmancipation/SpriteHomeroCompleto.png");
 
     //changing the width and height of the rectangle
     //player->setRect(0,0,player->characterWidth,player->characterHeight);
@@ -29,6 +31,7 @@ int main(int argc, char *argv[])
     //obstacle2->setRect(500,300,obstacle2->characterWidth,obstacle2->characterHeight);
     //adding a item to our scene
     scene->addItem(player);
+    scene->addItem(enemy);
 
     //make rectangle focusable
 
@@ -50,7 +53,8 @@ int main(int argc, char *argv[])
     QBrush bgBrush(bgPixmap.scaled(view->size(), Qt::KeepAspectRatioByExpanding));
     view->setBackgroundBrush(bgBrush);
 
-    player->setPos(10,350);
+    player->setPos(10,500);
+    enemy->setPos(500,480);
 
     //spawn random enemies
 
