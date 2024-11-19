@@ -4,7 +4,7 @@
 Protagonist::Protagonist() {
 
 }
-Protagonist::Protagonist(qreal characterWidth, qreal characterHeight, const QString &spritePath): Character(characterWidth, characterHeight, spritePath){
+Protagonist::Protagonist(qreal characterWidth, qreal characterHeight, const QString &spritePath, unsigned short int numberOfHorizontalSprites): Character(characterWidth, characterHeight, spritePath, numberOfHorizontalSprites){
     setFlag(QGraphicsItem::ItemIsFocusable);
 }
 
@@ -61,7 +61,8 @@ void Protagonist::keyPressEvent(QKeyEvent *event)
         }
         //setSprite(355);
         //create obstacle
-        Obstacle  *proyectile = new Obstacle();
+        Obstacle  *proyectile = new Obstacle(":/imagesEmancipation/BartBullet.png",10);
+
         if(this->getDirectionSprite() == 1){
             proyectile->setDirection(1);
             proyectile->setPos(x()+this->getCharacterWidth(),y()+(this->getCharacterHeight()/2));

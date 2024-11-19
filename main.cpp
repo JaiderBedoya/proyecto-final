@@ -21,8 +21,8 @@ int main(int argc, char *argv[])
 
 
     //Create a item in this case is a rectangle
-    Protagonist *player = new Protagonist(70.33,88.75,":/imagesEmancipation/bartConAtaque.png");
-    Enemy *enemy = new Enemy(90,99,":/imagesEmancipation/SpriteHomeroCompleto.png");
+    Protagonist *player = new Protagonist(70.33,88.75,":/imagesEmancipation/bartConAtaque.png",6);
+    Enemy *enemy = new Enemy(90,99,":/imagesEmancipation/SpriteHomeroCompleto.png",8);
 
     //changing the width and height of the rectangle
     //player->setRect(0,0,player->characterWidth,player->characterHeight);
@@ -54,8 +54,7 @@ int main(int argc, char *argv[])
     view->setBackgroundBrush(bgBrush);
 
     player->setPos(10,500);
-    enemy->setPos(500,480);
-
+    enemy->setPos(700,480);
     //spawn random enemies
 
 

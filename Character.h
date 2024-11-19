@@ -8,6 +8,7 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 #include <QTimer>
+#include <QRandomGenerator>
 
 class Character : public QObject , public QGraphicsPixmapItem
 {
@@ -15,6 +16,7 @@ class Character : public QObject , public QGraphicsPixmapItem
 
 private:
     qreal movementDirection;
+    unsigned short int numberOfHorizontalSprites;
     unsigned short int health;
     short int directionSprite = 1;
     qreal characterWidth;
@@ -26,8 +28,7 @@ public:
     QPixmap spriteSheet;
     QPixmap actualSprite;
     Character();
-    Character(qreal characterWidth_,qreal characterHeight_, const QString spritePath);
-
+    Character(qreal characterWidth_,qreal characterHeight_, QString spritePath, unsigned short int numberOfHorizontalSprites);
     int counterSprite = 0;
 
     int coordinateSpriteX = 0, coordinateSpriteY = 0;
@@ -44,6 +45,10 @@ public:
     void setSprite();
     void setDirectionSprite(short int _directionSprite);
     void setMovementDirection(qreal _movementDirection);
+
+    void setCounterSprite(int _counterSprite);
+
+    int getCounterSprite() ;
 
 public slots:
 };

@@ -8,7 +8,7 @@ private:
 
 public:
     Protagonist();
-    Protagonist(qreal characterWidth, qreal characterHeight, const QString &spritePath);
+    Protagonist(qreal characterWidth, qreal characterHeight, const QString &spritePath, unsigned short int numberOfHorizontalSprites);
     void keyPressEvent(QKeyEvent* event);
 };
 

@@ -8,7 +8,7 @@ Character::Character()
 
 }
 
-Character::Character(qreal characterWidth_,qreal characterHeight_, QString spritePath): characterWidth(characterWidth_), characterHeight(characterHeight_){
+Character::Character(qreal characterWidth_,qreal characterHeight_, QString spritePath, unsigned short int _numberOfHorizontalSprites): characterWidth(characterWidth_), characterHeight(characterHeight_), numberOfHorizontalSprites(_numberOfHorizontalSprites){
     //setting the sprite
     movementTimer = new QTimer(this);
 
@@ -17,6 +17,16 @@ Character::Character(qreal characterWidth_,qreal characterHeight_, QString sprit
     setPixmap(actualSprite);
 
     connect(movementTimer, &QTimer::timeout, this, &Character::setSprite);
+}
+
+int Character::getCounterSprite()
+{
+    return counterSprite;
+}
+
+void Character::setCounterSprite(int _counterSprite)
+{
+    counterSprite = _counterSprite;
 }
 
 //GETTERS
@@ -76,6 +86,7 @@ void Character::setSprite(){
     actualSprite = spriteSheet.copy(coordinateSpriteX,coordinateSpriteY,characterWidth,characterHeight);
     setPixmap(actualSprite);
     counterSprite++;
+    //this is an exclusive line of code for bart, it's a protagonist instance
     if(movementDirection == 355 && directionSprite == 1){
         if(counterSprite == 3){
             movementTimer->stop();
@@ -83,12 +94,12 @@ void Character::setSprite(){
         }
     }
     else if(movementDirection == 495.66 && directionSprite == -1){
-        if(counterSprite == 6){
+        if(counterSprite == numberOfHorizontalSprites){
             movementTimer->stop();
             counterSprite = 0;
         }
     }
-    if(counterSprite == 6){
+    if(counterSprite == numberOfHorizontalSprites){
         movementTimer->stop();
         counterSprite = 0;
     }

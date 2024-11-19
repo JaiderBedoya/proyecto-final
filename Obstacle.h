@@ -13,16 +13,18 @@ class Obstacle: public QObject, public QGraphicsPixmapItem
     Q_OBJECT
 private:
     short int direction = 1;
-    unsigned short int timeLapsed = 0;
+    qreal timeLapsed = 0;
     qreal velocity;
     qreal angle;
 public:
-    Obstacle();
+    Obstacle(const QString& obstacleImage, qreal size);
     void setDirection(short int _direction);
-    void setTimeLapsed(unsigned short int _timeLapsed);
+    void setTimeLapsed(qreal _timeLapsed);
     void setVelocity(qreal _velocity);
-    unsigned short int getTimeLapsed();
+    qreal getTimeLapsed();
     qreal getVelocity();
+    QTimer *timerMovPar;
+    QTimer* timer;
 
 public slots:
     void move();
