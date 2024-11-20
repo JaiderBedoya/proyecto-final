@@ -19,25 +19,30 @@ Character::Character(qreal characterWidth_,qreal characterHeight_, QString sprit
     connect(movementTimer, &QTimer::timeout, this, &Character::setSprite);
 }
 
+
+//GETTERS
+
+int Character::getCoordinateSpriteY()
+{
+    return coordinateSpriteY;
+}
+
+int Character::getCoordinateSpriteX()
+{
+    return coordinateSpriteX;
+}
+
 int Character::getCounterSprite()
 {
     return counterSprite;
 }
-
-void Character::setCounterSprite(int _counterSprite)
-{
-    counterSprite = _counterSprite;
-}
-
-//GETTERS
-
 
 qreal Character::getMovementDirection()
 {
     return movementDirection;
 }
 
-unsigned short int Character::getHealth()
+short int Character::getHealth()
 {
     return health;
 }
@@ -67,6 +72,7 @@ int Character::getSpriteHeight()
     return spriteHeight;
 }
 
+
 //SETTERS
 
 void Character::setDirectionSprite(short _directionSprite)
@@ -77,6 +83,26 @@ void Character::setDirectionSprite(short _directionSprite)
 void Character::setMovementDirection(qreal _movementDirection)
 {
     movementDirection = _movementDirection;
+}
+
+void Character::setCoordinateSpriteY(int _CoordinateSpriteY)
+{
+    coordinateSpriteY = _CoordinateSpriteY;
+}
+
+void Character::setCoordinateSpriteX(int _CoordinateSpriteX)
+{
+    coordinateSpriteX = _CoordinateSpriteX;
+}
+
+void Character::setCounterSprite(int _counterSprite)
+{
+    counterSprite = _counterSprite;
+}
+
+void Character::setHealth(short int _health)
+{
+    health = _health;
 }
 
 void Character::setSprite(){
@@ -103,6 +129,10 @@ void Character::setSprite(){
         movementTimer->stop();
         counterSprite = 0;
     }
+    if(this->getMovementDirection() == this->getCharacterHeight()){
+        qDebug() << "Right kamehameha";
+    }
+
 }
 
 

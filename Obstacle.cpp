@@ -1,14 +1,20 @@
 #include "Obstacle.h"
 
+qreal Obstacle::getSizeObstacle()
+{
+    return sizeObstacle;
+}
+
 Obstacle::Obstacle(const QString& obstacleImage, qreal size){
     //drawing the rectangle
     QPixmap projectileImage(obstacleImage);
+    this->setSizeObstacle(size);
     QPixmap redimensionedImage = projectileImage.scaled(size, size, Qt::KeepAspectRatio);
     setPixmap(redimensionedImage);
     //connect
     timer = new QTimer();
     connect(timer,SIGNAL(timeout()),this,SLOT(move()));
-    timerMovPar = new QTimer(this); //Siempre se debe inicializar
+    timerMovPar = new QTimer(this);
     connect(timerMovPar, &QTimer::timeout, this, [=]() {
         parabolicMove();
     });
@@ -16,6 +22,11 @@ Obstacle::Obstacle(const QString& obstacleImage, qreal size){
     angle = 45;
     angle = angle*M_PI/180;
     timer->start(20);
+}
+
+void Obstacle::setSizeObstacle(qreal _sizeObstacle)
+{
+    sizeObstacle = _sizeObstacle;
 }
 
 void Obstacle::setDirection(short int _direction){
@@ -44,6 +55,8 @@ qreal Obstacle::getVelocity()
 
 void Obstacle::move()
 {
+    //checking collision
+    checkCollision();
     //moving the obstacle up and rigth/left
     setPos(x() + (velocity*direction) ,y());
     if(pos().x() + 10 < 0 || pos().x() +10 > 800){
@@ -56,6 +69,9 @@ void Obstacle::move()
 void Obstacle::parabolicMove()
 {
     timer->stop();
+    //checking collision
+    checkCollision();
+
     qreal X,Y;
     qreal initialX = x(), initialY = y();
     qreal initialVelocityX, initialVelocityY;
@@ -63,7 +79,7 @@ void Obstacle::parabolicMove()
     initialVelocityX = velocity*qCos(angle);
     initialVelocityY = velocity*qSin(angle);
 
-    X = initialX - initialVelocityX*timeLapsed;
+    X = initialX + (initialVelocityX*timeLapsed)*direction;
     Y = initialY + (-initialVelocityY*timeLapsed) + (0.5*9.8*timeLapsed*timeLapsed);
    // X = velocity * qCos(angle) * timeLapsed * direction;
    // Y = (velocity * qSin(angle) * timeLapsed - 0.5 * 9.8 * qPow(timeLapsed, 2));
@@ -74,7 +90,44 @@ void Obstacle::parabolicMove()
     //this->setVelocity(this->getVelocity()+0.1);
     if(pos().x() + 10 < 0 || pos().x() +10 > 800){
         scene()->removeItem(this);
-        delete this;
+        deleteLater();
         qDebug() << "obstacle deleted";
+    }
+}
+
+void Obstacle::checkCollision(){
+    QList<QGraphicsItem *> collidingBullets = collidingItems();
+    for(unsigned short int i = 0; i < collidingBullets.size();i++){
+        if(typeid(*(collidingBullets[i])) == typeid(Enemy) && this->getSizeObstacle() == 10){
+
+            Enemy* enemyColliding = dynamic_cast<Enemy*>(collidingBullets[i]);
+            if (enemyColliding) {
+                enemyColliding->setHealth((enemyColliding->getHealth()-2));
+
+                //Homero lost
+                if (enemyColliding->getHealth() <= 0) {
+                    scene()->removeItem(enemyColliding);
+                    delete enemyColliding;
+                }
+
+                scene()->removeItem(this);
+                deleteLater();
+            }
+        }
+        else if(typeid(*(collidingBullets[i])) == typeid(Protagonist) && this->getSizeObstacle() == 30){
+            Protagonist* protagonistReceivingDamage = dynamic_cast<Protagonist*>(collidingBullets[i]);
+            if (protagonistReceivingDamage) {
+                protagonistReceivingDamage->setHealth((protagonistReceivingDamage->getHealth()-20));
+
+                //Homero lost
+                if (protagonistReceivingDamage->getHealth() <= 0) {
+                    scene()->removeItem(protagonistReceivingDamage);
+                    delete protagonistReceivingDamage;
+                }
+                scene()->removeItem(this);
+                deleteLater();
+            }
+
+        }
     }
 }

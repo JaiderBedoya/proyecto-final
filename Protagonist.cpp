@@ -11,6 +11,7 @@ Protagonist::Protagonist(qreal characterWidth, qreal characterHeight, const QStr
 void Protagonist::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_A){
+        qDebug()<< this->getHealth();
         this->setDirectionSprite(-1);
         if(pos().x() > 0)
             setPos(x()-7,y());
@@ -22,6 +23,7 @@ void Protagonist::keyPressEvent(QKeyEvent *event)
         qDebug() << "You pressed the A key";
     }
     else if(event->key() == Qt::Key_D){
+        qDebug()<< this->getHealth();
         this->setDirectionSprite(1);
         if(pos().x() + this->getCharacterWidth() < 800)//70.33,88.75
             setPos(x()+7,y());
@@ -33,6 +35,7 @@ void Protagonist::keyPressEvent(QKeyEvent *event)
         qDebug() << "You pressed the D key";
     }
     else if(event->key() == Qt::Key_W){
+        qDebug()<< this->getHealth();
         if(pos().y() > 340)
             setPos(x(),y()-7);
         this->setMovementDirection(177.5);
@@ -43,6 +46,7 @@ void Protagonist::keyPressEvent(QKeyEvent *event)
         qDebug() << "You pressed the W key";
     }
     else if(event->key() == Qt::Key_S){
+        qDebug()<< this->getHealth();
         if(pos().y() + this->getCharacterHeight() < 600)
             setPos(x(),y()+7);
         this->setMovementDirection(88.75);
@@ -53,6 +57,7 @@ void Protagonist::keyPressEvent(QKeyEvent *event)
         qDebug() << "You pressed the S key";
     }
     else if(event->key() == Qt::Key_Space){
+        qDebug()<< this->getHealth();
         this->setMovementDirection(355);
         (this->getDirectionSprite() == 1) ? counterSprite = 0 : counterSprite = 3;
 

@@ -24,11 +24,14 @@ public:
     void aleatoryAttack();
 
     qreal moveValor = 10;
+    unsigned short int rollCounter = 0;
 
     void kamehamehaAttack();
     void throwBullet();
     void roll();
 
+    void createKamehameha();
+    void checkProtagonistCollision();
 public slots:
 
 };

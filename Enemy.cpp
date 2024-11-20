@@ -25,10 +25,9 @@ Enemy::Enemy(qreal characterWidth, qreal characterHeight, const QString &spriteP
 
     //connect(timer, &QTimer::timeout, this, &Enemy::increaseMovementDirection);  
     autonomousTimer->start(100);
-    aleatoryAttackTimer->start(2000);
+    aleatoryAttackTimer->start(1000);
 
-
-    this->setDirectionSprite(1);
+    this->setDirectionSprite(-1);
 
     //timer->start(1000);
 
@@ -57,6 +56,12 @@ void Enemy::increaseMovementDirection()
 
 void Enemy::autonomousMovement()
 {
+    if(x() <= 200){
+        this->setDirectionSprite(-1);
+    }
+    else if(x() >= 400){
+        this->setDirectionSprite(1);
+    }
     if(this->getDirectionSprite() == 1){
         this->setMovementDirection(this->getCharacterHeight()*4);
     }
@@ -67,17 +72,19 @@ void Enemy::autonomousMovement()
     movementTimer->start(100);
 
     this->setPos(x(),y()+moveValor);
+    this->checkProtagonistCollision();
     if(y() <= 340){
         moveValor = 10;
         qDebug() << "Bajando";
     }
-    if(y()+this->getCharacterHeight() >= 600 && y() > 340){
+    if(y()+this->getCharacterHeight() >= 580 && y() > 340){
         moveValor = -10;
         qDebug() << "Subiendo";
     }
 }
 
 void Enemy::aleatoryAttack(){
+    qDebug()<<this->getHealth();
     unsigned short int randomNumber = QRandomGenerator::global()->bounded(3);
 
     switch (randomNumber) {
@@ -137,80 +144,150 @@ void Enemy::aleatoryAttack(){
 
 void Enemy::kamehamehaAttack()
 {
-    movementTimer->start(100);
+    if(x() <= 200){
+        this->setDirectionSprite(1);
+    }
+    else if(x() >= 400){
+        this->setDirectionSprite(-1);
+    }
+
+
     qDebug()<<"throwing kamehameha";
     autonomousTimer->stop();
-
-    this->setDirectionSprite(-1);
+    movementTimer->start();
     if(this->getDirectionSprite() == 1){
         this->setMovementDirection(this->getCharacterHeight());
     }
     else if(this->getDirectionSprite() == -1){
         this->setMovementDirection(this->getCharacterHeight()*5);
     }
+
+    QTimer *oneShotTimer = new QTimer();
+    oneShotTimer->setSingleShot(true);
+    connect(oneShotTimer, &QTimer::timeout, this, &Enemy::createKamehameha);
+    oneShotTimer->start(800);
+
+    autonomousTimer->start(1000);
+}
+
+
+void Enemy::createKamehameha(){
+
     Obstacle  *kamehameha = new Obstacle(":/imagesEmancipation/KamehamehaParticle.png",30);
+
     if(this->getDirectionSprite() == 1){
         kamehameha->setDirection(1);
         kamehameha->setPos(x()+this->getCharacterWidth(),y()+(this->getCharacterHeight()/2));
     }
-    else{
+    else if(this->getDirectionSprite() == -1){
         kamehameha->setDirection(-1);
         kamehameha->setPos(x(),y()+(this->getCharacterHeight()/2));
     }
+
     scene()->addItem(kamehameha);
-    autonomousTimer->start(1000);
 }
+
 
 void Enemy::throwBullet()
 {
-    movementTimer->start(100);
-    qDebug()<<"throwing parabolic Bullet";
-    autonomousTimer->stop();
-    this->setDirectionSprite(-1);
-    if(this->getDirectionSprite() == 1){
-        this->setMovementDirection(this->getCharacterHeight()*3);
+    if(x() <= 200){
+        this->setDirectionSprite(-1);
     }
-    else if(this->getDirectionSprite() == -1){
-        this->setMovementDirection(this->getCharacterHeight()*7);
+    else if(x() >= 400){
+        this->setDirectionSprite(1);
     }
 
+    movementTimer->start(70);
+    qDebug()<<"throwing parabolic Bullet";
+    autonomousTimer->stop();
+
     Obstacle  *cannonBall = new Obstacle(":/imagesEmancipation/HomeroBullet.png",30);
+    cannonBall->setDirection(this->getDirectionSprite());
     cannonBall->timerMovPar->start(50);
+
     if(this->getDirectionSprite() == 1){
-        cannonBall->setDirection(1);
-        cannonBall->setPos(x()+this->getCharacterWidth(),y()+(this->getCharacterHeight()/2));
-    }
-    else{
+        this->setMovementDirection(this->getCharacterHeight()*7);
         cannonBall->setDirection(-1);
         cannonBall->setPos(x(),y()+(this->getCharacterHeight()/2));
     }
-    scene()->addItem(cannonBall);
-    autonomousTimer->start(1000);
 
+    else if(this->getDirectionSprite() == -1){
+        this->setMovementDirection(this->getCharacterHeight()*3);
+        cannonBall->setDirection(1);
+        cannonBall->setPos(x()+this->getCharacterWidth(),y()+(this->getCharacterHeight()/2));
+    }
+    scene()->addItem(cannonBall);
+
+    autonomousTimer->start(1000);
 }
 
 void Enemy::roll()
 {
+    if(x() <= 200){
+        this->setDirectionSprite(-1);
+    }
+    else if(x() >= 400){
+        this->setDirectionSprite(1);
+    }
+    if(rollCounter == 3){
+        qDebug()<<"Stop";
+        rollCounter = 0;
+        aleatoryAttackTimer->start(1000);
+        autonomousTimer->start(100);
+        movementTimer->start(100);
+        rollTimer->stop();
+    }
+    else{
     qDebug()<<"rolling around the map";
     autonomousTimer->stop();
+    aleatoryAttackTimer->stop();
     movementTimer->start(20);
+
+
     if(this->getDirectionSprite() == 1){
         this->setMovementDirection(this->getCharacterHeight()*2);
+
     }
     else if(this->getDirectionSprite() == -1){
         this->setMovementDirection(this->getCharacterHeight()*6);
+
     }
 
     this->setPos(x()+moveValor,y());
+    this->checkProtagonistCollision();
     if(x() <= 0){
         moveValor = 20;
         qDebug() << "Girando a la derecha";
+        rollCounter++;
         this->setDirectionSprite(1);
     }
     if(x()+this->getCharacterWidth() >= 800){
         moveValor = -20;
         qDebug() << "Girando a la izquierda";
+        rollCounter++;
         this->setDirectionSprite(-1);
     }
+    }
+}
 
+void Enemy::checkProtagonistCollision(){
+
+    QList<QGraphicsItem*> collidingItemsList = collidingItems();
+    for (unsigned short int i = 0; i < collidingItemsList.size(); i++) {
+        //Collision with bart
+        if (typeid(*(collidingItemsList[i])) == typeid(Protagonist)) {
+            Protagonist* bart = dynamic_cast<Protagonist*>(collidingItemsList[i]);
+            if (bart) {
+
+                bart->setHealth(bart->getHealth() - 2);
+
+                if (bart->getHealth() <= 0) {
+                    scene()->removeItem(bart);
+                    delete bart;
+                    qDebug() << "Protagonist defeated!";
+                }
+
+        }
+        }
+    }
 }

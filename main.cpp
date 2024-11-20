@@ -8,6 +8,7 @@
 #include <QBrush>
 #include <QImage>
 #include <QColor>
+#include <QFont>
 
 #include <QApplication>
 
@@ -55,7 +56,13 @@ int main(int argc, char *argv[])
 
     player->setPos(10,500);
     enemy->setPos(700,480);
-    //spawn random enemies
+
+    QGraphicsTextItem bartHealth;
+    bartHealth.setPlainText(QString("BART HEALTH: ") + QString::number(player->getHealth()));
+    bartHealth.setDefaultTextColor(Qt::black);
+    bartHealth.setFont(QFont("times",16));
+    bartHealth.setPos(0,0);
+    scene->addItem(&bartHealth);
 
 
     //MainWindow w;

@@ -17,7 +17,7 @@ class Character : public QObject , public QGraphicsPixmapItem
 private:
     qreal movementDirection;
     unsigned short int numberOfHorizontalSprites;
-    unsigned short int health;
+    short int health = 100;
     short int directionSprite = 1;
     qreal characterWidth;
     qreal characterHeight;
@@ -32,8 +32,10 @@ public:
     int counterSprite = 0;
 
     int coordinateSpriteX = 0, coordinateSpriteY = 0;
+
+
     qreal getMovementDirection();
-    unsigned short int getHealth();
+    short int getHealth();
     short int getDirectionSprite();
     qreal getCharacterWidth();
     qreal getCharacterHeight();
@@ -41,7 +43,7 @@ public:
     int getSpriteHeight();
 
 
-    void setHealth();
+    void setHealth(short int _health);
     void setSprite();
     void setDirectionSprite(short int _directionSprite);
     void setMovementDirection(qreal _movementDirection);
@@ -49,6 +51,14 @@ public:
     void setCounterSprite(int _counterSprite);
 
     int getCounterSprite() ;
+
+    int getCoordinateSpriteX() ;
+
+    int getCoordinateSpriteY() ;
+
+    void setCoordinateSpriteX(int _CoordinateSpriteX);
+
+    void setCoordinateSpriteY(int _CoordinateSpriteY);
 
 public slots:
 };
