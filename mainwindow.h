@@ -2,6 +2,19 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "Enemy.h"
+#include "Protagonist.h"
+#include <QApplication>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QTimer>
+#include <QBrush>
+#include <QImage>
+#include <QColor>
+#include <QFont>
+#include <QMediaPlayer>
+#include <QUrl>
+#include <QAudioOutput>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -16,7 +29,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+    void firstLevelScene();
 private:
     Ui::MainWindow *ui;
 };

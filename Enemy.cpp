@@ -1,6 +1,26 @@
 #include "Enemy.h"
 #include "Obstacle.h"
 
+QProgressBar *Enemy::getHomerHealthBar()
+{
+    return homerHealthBar;
+}
+
+void Enemy::setHomerHealthBar(int newHealthBar)
+{
+    homerHealthBar->setValue(newHealthBar);
+    if(this->getHealth() < 100){
+        QMediaPlayer* music = new QMediaPlayer;
+        music->setSource(QUrl("qrc:/sounds/soundsEmancipation/Voicy_Homer Simpson_ Doh 3.mp3"));
+        QAudioOutput* audioOutput = new QAudioOutput(this);
+
+        music->setAudioOutput(audioOutput);
+        audioOutput->setVolume(0.5);
+        music->play();
+    }
+}
+
+
 Enemy::Enemy() {}
 
 Enemy::Enemy(qreal characterWidth, qreal characterHeight, const QString &spritePath, unsigned short int numberOfHorizontalSprites): Character(characterWidth, characterHeight, spritePath, numberOfHorizontalSprites){
@@ -28,6 +48,11 @@ Enemy::Enemy(qreal characterWidth, qreal characterHeight, const QString &spriteP
     aleatoryAttackTimer->start(1000);
 
     this->setDirectionSprite(-1);
+
+    homerHealthBar = new QProgressBar();
+    homerHealthBar->setRange(0, 100);
+    homerHealthBar->setValue(this->getHealth());
+    homerHealthBar->setTextVisible(false);
 
     //timer->start(1000);
 
@@ -278,16 +303,17 @@ void Enemy::checkProtagonistCollision(){
         if (typeid(*(collidingItemsList[i])) == typeid(Protagonist)) {
             Protagonist* bart = dynamic_cast<Protagonist*>(collidingItemsList[i]);
             if (bart) {
-
                 bart->setHealth(bart->getHealth() - 2);
+                bart->setBartHealthBar(bart->getHealth()-2);
 
                 if (bart->getHealth() <= 0) {
+                     bart->setBartHealthBar(0);
                     scene()->removeItem(bart);
                     delete bart;
                     qDebug() << "Protagonist defeated!";
                 }
-
         }
         }
     }
 }
+

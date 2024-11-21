@@ -1,21 +1,15 @@
 #include "mainwindow.h"
-#include "Enemy.h"
-#include "Protagonist.h"
-#include <QApplication>
-#include <QGraphicsScene>
-#include <QGraphicsView>
-#include <QTimer>
-#include <QBrush>
-#include <QImage>
-#include <QColor>
-#include <QFont>
-
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+    return a.exec();
+}
 
+/*
     //Create a scene
     QGraphicsScene *scene = new QGraphicsScene;
     scene->setSceneRect(0,0,800,600);
@@ -55,18 +49,4 @@ int main(int argc, char *argv[])
     view->setBackgroundBrush(bgBrush);
 
     player->setPos(10,500);
-    enemy->setPos(700,480);
-
-    QGraphicsTextItem bartHealth;
-    bartHealth.setPlainText(QString("BART HEALTH: ") + QString::number(player->getHealth()));
-    bartHealth.setDefaultTextColor(Qt::black);
-    bartHealth.setFont(QFont("times",16));
-    bartHealth.setPos(0,0);
-    scene->addItem(&bartHealth);
-
-
-    //MainWindow w;
-    //w.show();
-
-    return a.exec();
-}
+    enemy->setPos(700,480);*/

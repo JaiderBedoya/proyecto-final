@@ -9,6 +9,8 @@
 #include <QTimer>
 #include <QtMath>
 #include <QList>
+#include <QMediaPlayer>
+#include <QAudioOutput>
 
 class Obstacle: public QObject, public QGraphicsPixmapItem
 {

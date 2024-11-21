@@ -15,7 +15,6 @@ Character::Character(qreal characterWidth_,qreal characterHeight_, QString sprit
     spriteSheet.load(spritePath);
     actualSprite = spriteSheet.copy(coordinateSpriteX,coordinateSpriteY,characterWidth,characterHeight);
     setPixmap(actualSprite);
-
     connect(movementTimer, &QTimer::timeout, this, &Character::setSprite);
 }
 

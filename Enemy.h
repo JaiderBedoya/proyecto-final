@@ -6,6 +6,7 @@ class Enemy: public Character
 {
 private:
     bool attacking;
+    QProgressBar* homerHealthBar;
 public:
 
     QTimer *autonomousTimer;
@@ -32,6 +33,11 @@ public:
 
     void createKamehameha();
     void checkProtagonistCollision();
+    QProgressBar *getHomerHealthBar();
+
+    void setHomerHealthBar(int newHealthBar);
+
+    void playDamageSound();
 public slots:
 
 };

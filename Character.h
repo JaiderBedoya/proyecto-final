@@ -9,6 +9,10 @@
 #include <QGraphicsScene>
 #include <QTimer>
 #include <QRandomGenerator>
+#include <QProgressBar>
+#include <QGraphicsProxyWidget>
+#include <QMediaPlayer>
+#include <QAudioOutput>
 
 class Character : public QObject , public QGraphicsPixmapItem
 {

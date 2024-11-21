@@ -55,8 +55,6 @@ qreal Obstacle::getVelocity()
 
 void Obstacle::move()
 {
-    //checking collision
-    checkCollision();
     //moving the obstacle up and rigth/left
     setPos(x() + (velocity*direction) ,y());
     if(pos().x() + 10 < 0 || pos().x() +10 > 800){
@@ -64,14 +62,14 @@ void Obstacle::move()
         deleteLater();
         qDebug() << "obstacle deleted";
     }
+    //checking collision
+    checkCollision();
+
 }
 
 void Obstacle::parabolicMove()
 {
     timer->stop();
-    //checking collision
-    checkCollision();
-
     qreal X,Y;
     qreal initialX = x(), initialY = y();
     qreal initialVelocityX, initialVelocityY;
@@ -81,8 +79,6 @@ void Obstacle::parabolicMove()
 
     X = initialX + (initialVelocityX*timeLapsed)*direction;
     Y = initialY + (-initialVelocityY*timeLapsed) + (0.5*9.8*timeLapsed*timeLapsed);
-   // X = velocity * qCos(angle) * timeLapsed * direction;
-   // Y = (velocity * qSin(angle) * timeLapsed - 0.5 * 9.8 * qPow(timeLapsed, 2));
     setPos(X,Y);
     timeLapsed += 0.1;
 
@@ -93,34 +89,44 @@ void Obstacle::parabolicMove()
         deleteLater();
         qDebug() << "obstacle deleted";
     }
+    //checking collision
+    checkCollision();
 }
 
 void Obstacle::checkCollision(){
     QList<QGraphicsItem *> collidingBullets = collidingItems();
     for(unsigned short int i = 0; i < collidingBullets.size();i++){
+
+
         if(typeid(*(collidingBullets[i])) == typeid(Enemy) && this->getSizeObstacle() == 10){
 
             Enemy* enemyColliding = dynamic_cast<Enemy*>(collidingBullets[i]);
             if (enemyColliding) {
-                enemyColliding->setHealth((enemyColliding->getHealth()-2));
 
+                enemyColliding->setHealth((enemyColliding->getHealth()-2));
+                enemyColliding->setHomerHealthBar((enemyColliding->getHealth()-2));
                 //Homero lost
                 if (enemyColliding->getHealth() <= 0) {
+                    enemyColliding->setHomerHealthBar(0);
                     scene()->removeItem(enemyColliding);
                     delete enemyColliding;
                 }
-
                 scene()->removeItem(this);
                 deleteLater();
             }
         }
         else if(typeid(*(collidingBullets[i])) == typeid(Protagonist) && this->getSizeObstacle() == 30){
-            Protagonist* protagonistReceivingDamage = dynamic_cast<Protagonist*>(collidingBullets[i]);
-            if (protagonistReceivingDamage) {
-                protagonistReceivingDamage->setHealth((protagonistReceivingDamage->getHealth()-20));
 
-                //Homero lost
+            Protagonist* protagonistReceivingDamage = dynamic_cast<Protagonist*>(collidingBullets[i]);
+
+            if (protagonistReceivingDamage) {
+
+                protagonistReceivingDamage->setHealth((protagonistReceivingDamage->getHealth()-20));
+                protagonistReceivingDamage->setBartHealthBar((protagonistReceivingDamage->getHealth()-20));
+
+                //Bart Lost
                 if (protagonistReceivingDamage->getHealth() <= 0) {
+                    protagonistReceivingDamage->setBartHealthBar(0);
                     scene()->removeItem(protagonistReceivingDamage);
                     delete protagonistReceivingDamage;
                 }
