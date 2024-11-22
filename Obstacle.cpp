@@ -115,9 +115,9 @@ void Obstacle::checkCollision(){
                 deleteLater();
             }
         }
-        else if(typeid(*(collidingBullets[i])) == typeid(Protagonist) && this->getSizeObstacle() == 30){
+        else if(typeid(*(collidingBullets[i])) == typeid(Bart) && this->getSizeObstacle() == 30){
 
-            Protagonist* protagonistReceivingDamage = dynamic_cast<Protagonist*>(collidingBullets[i]);
+            Bart* protagonistReceivingDamage = dynamic_cast<Bart*>(collidingBullets[i]);
 
             if (protagonistReceivingDamage) {
 

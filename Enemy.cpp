@@ -23,6 +23,7 @@ void Enemy::setHomerHealthBar(int newHealthBar)
 
 Enemy::Enemy() {}
 
+
 Enemy::Enemy(qreal characterWidth, qreal characterHeight, const QString &spritePath, unsigned short int numberOfHorizontalSprites): Character(characterWidth, characterHeight, spritePath, numberOfHorizontalSprites){
     setFlag(QGraphicsItem::ItemIsFocusable);
 
@@ -176,7 +177,6 @@ void Enemy::kamehamehaAttack()
         this->setDirectionSprite(-1);
     }
 
-
     qDebug()<<"throwing kamehameha";
     autonomousTimer->stop();
     movementTimer->start();
@@ -300,8 +300,8 @@ void Enemy::checkProtagonistCollision(){
     QList<QGraphicsItem*> collidingItemsList = collidingItems();
     for (unsigned short int i = 0; i < collidingItemsList.size(); i++) {
         //Collision with bart
-        if (typeid(*(collidingItemsList[i])) == typeid(Protagonist)) {
-            Protagonist* bart = dynamic_cast<Protagonist*>(collidingItemsList[i]);
+        if (typeid(*(collidingItemsList[i])) == typeid(Bart)) {
+            Bart* bart = dynamic_cast<Bart*>(collidingItemsList[i]);
             if (bart) {
                 bart->setHealth(bart->getHealth() - 2);
                 bart->setBartHealthBar(bart->getHealth()-2);
@@ -310,9 +310,9 @@ void Enemy::checkProtagonistCollision(){
                      bart->setBartHealthBar(0);
                     scene()->removeItem(bart);
                     delete bart;
-                    qDebug() << "Protagonist defeated!";
+                    qDebug() << "Bart defeated!";
                 }
-        }
+            }
         }
     }
 }

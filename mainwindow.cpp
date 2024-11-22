@@ -1,11 +1,49 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+/*
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    firstLevelScene();
+    secondLevelScene();
+    //firstLevelScene();
 }
+*/
+
+MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow), firstBackGround(nullptr) , secondBackGround(nullptr), backGroundWidth(0), scrollSpeed(5)
+{
+    ui->setupUi(this);
+
+    QGraphicsScene *scene = new QGraphicsScene(this);
+    ui->graphicsView->setScene(scene);
+
+    QPixmap backGroundPixmap(":/imagesEmancipation/SkateParkBackGround.png");
+
+    backGroundWidth = backGroundPixmap.width();
+
+    firstBackGround = scene->addPixmap(backGroundPixmap);
+    secondBackGround = scene->addPixmap(backGroundPixmap);
+
+    firstBackGround->setPos(0, 0);
+    secondBackGround->setPos(backGroundWidth, 0);
+
+    ui->graphicsView->setFixedSize(backGroundWidth, backGroundPixmap.height());
+    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &MainWindow::scrollBackground);
+    timer->start(30);
+
+    Homero *homero = new Homero(39.67,76,":/imagesEmancipation/HomeroSkateSinCuadricula.png",6);
+
+    homero->setFlag(QGraphicsItem::ItemIsFocusable);
+
+    scene->addItem(homero);
+    homero->setPos(10,500);
+}
+
+
+
 
 void MainWindow::firstLevelScene(){
 
@@ -28,7 +66,7 @@ void MainWindow::firstLevelScene(){
 
 
     //Create an enemy and the protagonist
-    Protagonist *player = new Protagonist(70.33,88.75,":/imagesEmancipation/bartConAtaque.png",6);
+    Bart *player = new Bart(70.33,88.75,":/imagesEmancipation/bartConAtaque.png",6);
     Enemy *enemy = new Enemy(90,99,":/imagesEmancipation/SpriteHomeroCompleto.png",8);
 
     //adding items to our scene
@@ -68,11 +106,78 @@ void MainWindow::firstLevelScene(){
     music->setAudioOutput(audioOutput);
     audioOutput->setVolume(1.0);
     music->play();
+
+    connect(music, &QMediaPlayer::mediaStatusChanged, this, [=](QMediaPlayer::MediaStatus status) {
+        if (status == QMediaPlayer::EndOfMedia) {
+            music->setPosition(0);
+            music->play();
+        }
+    });
+}
+
+void MainWindow::secondLevelScene(){
+    //Create a scene
+    QGraphicsScene *scene = new QGraphicsScene;
+    scene->setSceneRect(0,30,800,600);
+    //adding items to our scene
+
+    //scene->addItem(player);
+    //scene->addItem(enemy);
+
+    //make player focusable for the key press events
+    //player->setFlag(QGraphicsItem::ItemIsFocusable);
+    //player->setFocus();
+
+    ui->graphicsView->setScene(scene);
+    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+
+    ui->graphicsView->show();
+    ui->graphicsView->setFixedSize(800,600);
+
+    QPixmap backGroundPixmap(":/imagesEmancipation/SkateParkBackGround.png");
+    QBrush backGroundBrush(backGroundPixmap.scaled(ui->graphicsView->size(), Qt::KeepAspectRatioByExpanding));
+    ui->graphicsView->setBackgroundBrush(backGroundBrush);
+
+}
+
+void MainWindow::setBackGroundWidth(unsigned short _backGroundWidth)
+{
+    backGroundWidth = _backGroundWidth;
+}
+
+void MainWindow::setScrollSpeed(unsigned short _scrollSpeed)
+{
+    scrollSpeed = _scrollSpeed;
+}
+
+unsigned short MainWindow::getBackGroundWidth()
+{
+    return backGroundWidth;
+}
+
+unsigned short MainWindow::getScrollSpeed()
+{
+    return scrollSpeed;
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::scrollBackground() {
+
+    firstBackGround->moveBy(-scrollSpeed, 0);
+    secondBackGround->moveBy(-scrollSpeed, 0);
+
+    if (firstBackGround->x() + backGroundWidth <= 0) {
+        firstBackGround->setPos(secondBackGround->x() + backGroundWidth, 0);
+    }
+    if (secondBackGround->x() + backGroundWidth <= 0) {
+        secondBackGround->setPos(firstBackGround->x() + backGroundWidth, 0);
+    }
 }
 
 

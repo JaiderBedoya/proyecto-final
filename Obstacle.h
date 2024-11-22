@@ -2,7 +2,7 @@
 #define OBSTACLE_H
 
 #include "Enemy.h"
-#include "Protagonist.h"
+#include "Bart.h"
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 #include <QObject>

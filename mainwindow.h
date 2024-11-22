@@ -3,7 +3,8 @@
 
 #include <QMainWindow>
 #include "Enemy.h"
-#include "Protagonist.h"
+#include "Bart.h"
+#include "Homero.h"
 #include <QApplication>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -29,8 +30,24 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
     void firstLevelScene();
+    void secondLevelScene();
+
+    void setBackGroundWidth(unsigned short _backGroundWidth);
+    void setScrollSpeed(unsigned short _scrollSpeed);
+
+    unsigned short getBackGroundWidth();
+    unsigned short getScrollSpeed();
+
 private:
     Ui::MainWindow *ui;
+
+    QGraphicsPixmapItem *firstBackGround;
+    QGraphicsPixmapItem *secondBackGround;
+    unsigned short int backGroundWidth;
+    unsigned short int scrollSpeed;
+private slots:
+    void scrollBackground();
 };
 #endif // MAINWINDOW_H
