@@ -1,49 +1,18 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-/*
-MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
-{
-    ui->setupUi(this);
-    secondLevelScene();
-    //firstLevelScene();
-}
-*/
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow), firstBackGround(nullptr) , secondBackGround(nullptr), backGroundWidth(0), scrollSpeed(5)
 {
     ui->setupUi(this);
 
-    QGraphicsScene *scene = new QGraphicsScene(this);
-    ui->graphicsView->setScene(scene);
+    QTimer* spawnRandomObstacleTimer = new QTimer();
+    connect(spawnRandomObstacleTimer, &QTimer::timeout, this, &MainWindow::spawnRandomObstacle);
 
-    QPixmap backGroundPixmap(":/imagesEmancipation/SkateParkBackGround.png");
+    secondLevelScene();
+    spawnRandomObstacleTimer->start(3000);
 
-    backGroundWidth = backGroundPixmap.width();
-
-    firstBackGround = scene->addPixmap(backGroundPixmap);
-    secondBackGround = scene->addPixmap(backGroundPixmap);
-
-    firstBackGround->setPos(0, 0);
-    secondBackGround->setPos(backGroundWidth, 0);
-
-    ui->graphicsView->setFixedSize(backGroundWidth, backGroundPixmap.height());
-    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-    QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, &MainWindow::scrollBackground);
-    timer->start(30);
-
-    Homero *homero = new Homero(39.67,76,":/imagesEmancipation/HomeroSkateSinCuadricula.png",6);
-
-    homero->setFlag(QGraphicsItem::ItemIsFocusable);
-
-    scene->addItem(homero);
-    homero->setPos(10,500);
+    //firstLevelScene();
 }
-
-
-
 
 void MainWindow::firstLevelScene(){
 
@@ -116,29 +85,50 @@ void MainWindow::firstLevelScene(){
 }
 
 void MainWindow::secondLevelScene(){
-    //Create a scene
-    QGraphicsScene *scene = new QGraphicsScene;
-    scene->setSceneRect(0,30,800,600);
-    //adding items to our scene
 
-    //scene->addItem(player);
-    //scene->addItem(enemy);
-
-    //make player focusable for the key press events
-    //player->setFlag(QGraphicsItem::ItemIsFocusable);
-    //player->setFocus();
-
+    QGraphicsScene *scene = new QGraphicsScene(this);
     ui->graphicsView->setScene(scene);
+
+    Homero *homero = new Homero(80.16,154,":/imagesEmancipation/HomeroSkate.png",6);
+
+    QPixmap* bartAndHomerFace = new QPixmap(":/imagesEmancipation/Bart y homero FotosCara.png");
+
+    QPixmap* homerFace = new QPixmap(bartAndHomerFace->copy(230,0,230,315));
+    QPixmap* scaledHomerFace = new QPixmap(homerFace->scaled(50,50,Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    QGraphicsPixmapItem* homerFaceItem = new QGraphicsPixmapItem(*scaledHomerFace);
+    homerFaceItem->setPos(20, 40);
+    scene->addItem(homerFaceItem);
+
+    //QGraphicsProxyWidget* homerHealthBarProxy = scene->addWidget(homero->getHomerHealthBar());
+    //homerHealthBarProxy->setPos(70, 65);
+
+
+    QPixmap backGroundPixmap(":/imagesEmancipation/SkateParkBackGroundOne.png");
+
+    backGroundWidth = backGroundPixmap.width();
+
+    firstBackGround = scene->addPixmap(backGroundPixmap);
+    secondBackGround = scene->addPixmap(backGroundPixmap);
+
+    firstBackGround->setPos(0, 0);
+    secondBackGround->setPos(backGroundWidth, 0);
+
+    ui->graphicsView->setFixedSize(backGroundWidth, backGroundPixmap.height());
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-
     ui->graphicsView->show();
-    ui->graphicsView->setFixedSize(800,600);
 
-    QPixmap backGroundPixmap(":/imagesEmancipation/SkateParkBackGround.png");
-    QBrush backGroundBrush(backGroundPixmap.scaled(ui->graphicsView->size(), Qt::KeepAspectRatioByExpanding));
-    ui->graphicsView->setBackgroundBrush(backGroundBrush);
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &MainWindow::scrollBackground);
+    timer->start(30);
+
+
+
+    homero->setFlag(QGraphicsItem::ItemIsFocusable);
+
+    scene->addItem(homero);
+    homero->setPos(10,300);
 
 }
 
@@ -180,5 +170,13 @@ void MainWindow::scrollBackground() {
     }
 }
 
+void MainWindow::spawnRandomObstacle(){
+
+    Obstacle* obstacle = new Obstacle(":/imagesEmancipation/Rocket.png",100,50);
+    ui->graphicsView->scene()->addItem(obstacle);
+    obstacle->setPos(700,300);
+    obstacle->oscillatoryTimer->start(50);
+
+}
 
 

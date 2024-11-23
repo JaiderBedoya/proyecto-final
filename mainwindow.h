@@ -5,6 +5,7 @@
 #include "Enemy.h"
 #include "Bart.h"
 #include "Homero.h"
+#include "Obstacle.h"
 #include <QApplication>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -40,6 +41,9 @@ public:
     unsigned short getBackGroundWidth();
     unsigned short getScrollSpeed();
 
+    void spawnRandomObstacle();
+
+    QTimer* spawnRandomObstacleTimer;
 private:
     Ui::MainWindow *ui;
 

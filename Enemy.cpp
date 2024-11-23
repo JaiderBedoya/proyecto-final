@@ -170,6 +170,7 @@ void Enemy::aleatoryAttack(){
 
 void Enemy::kamehamehaAttack()
 {
+
     if(x() <= 200){
         this->setDirectionSprite(1);
     }
@@ -198,7 +199,9 @@ void Enemy::kamehamehaAttack()
 
 void Enemy::createKamehameha(){
 
-    Obstacle  *kamehameha = new Obstacle(":/imagesEmancipation/KamehamehaParticle.png",30);
+    Obstacle  *kamehameha = new Obstacle(":/imagesEmancipation/KamehamehaParticle.png",30,30);
+    kamehameha->timer->start(20);
+    kamehameha->setVelocity(25);
 
     if(this->getDirectionSprite() == 1){
         kamehameha->setDirection(1);
@@ -226,9 +229,9 @@ void Enemy::throwBullet()
     qDebug()<<"throwing parabolic Bullet";
     autonomousTimer->stop();
 
-    Obstacle  *cannonBall = new Obstacle(":/imagesEmancipation/HomeroBullet.png",30);
+    Obstacle  *cannonBall = new Obstacle(":/imagesEmancipation/HomeroBullet.png",30,30);
     cannonBall->setDirection(this->getDirectionSprite());
-    cannonBall->timerMovPar->start(50);
+    cannonBall->timerMovPar->start(35);
 
     if(this->getDirectionSprite() == 1){
         this->setMovementDirection(this->getCharacterHeight()*7);

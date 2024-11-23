@@ -5,23 +5,49 @@ qreal Obstacle::getSizeObstacle()
     return sizeObstacle;
 }
 
-Obstacle::Obstacle(const QString& obstacleImage, qreal size){
-    //drawing the rectangle
+void Obstacle::setAmplitude(qreal _amplitude)
+{
+    amplitude = _amplitude;
+}
+
+qreal Obstacle::getAmplitude()
+{
+    return amplitude;
+}
+
+void Obstacle::setFrequency(qreal _frequency)
+{
+    frequency = _frequency;
+}
+
+qreal Obstacle::getFrequency()
+{
+    return frequency;
+}
+
+Obstacle::Obstacle(const QString& obstacleImage, qreal size, qreal sizeHeight){
+
     QPixmap projectileImage(obstacleImage);
+
     this->setSizeObstacle(size);
-    QPixmap redimensionedImage = projectileImage.scaled(size, size, Qt::KeepAspectRatio);
+
+    QPixmap redimensionedImage = projectileImage.scaled(size, sizeHeight, Qt::KeepAspectRatio);
+
     setPixmap(redimensionedImage);
-    //connect
+
     timer = new QTimer();
+    timerMovPar = new QTimer();
+    oscillatoryTimer = new QTimer();
+
     connect(timer,SIGNAL(timeout()),this,SLOT(move()));
-    timerMovPar = new QTimer(this);
     connect(timerMovPar, &QTimer::timeout, this, [=]() {
         parabolicMove();
     });
+    connect(oscillatoryTimer,SIGNAL(timeout()),this,SLOT(oscillatoryMove()));
+
     velocity = 15;
     angle = 45;
     angle = angle*M_PI/180;
-    timer->start(20);
 }
 
 void Obstacle::setSizeObstacle(qreal _sizeObstacle)
@@ -55,21 +81,17 @@ qreal Obstacle::getVelocity()
 
 void Obstacle::move()
 {
-    //moving the obstacle up and rigth/left
     setPos(x() + (velocity*direction) ,y());
     if(pos().x() + 10 < 0 || pos().x() +10 > 800){
         scene()->removeItem(this);
         deleteLater();
         qDebug() << "obstacle deleted";
     }
-    //checking collision
     checkCollision();
-
 }
 
 void Obstacle::parabolicMove()
 {
-    timer->stop();
     qreal X,Y;
     qreal initialX = x(), initialY = y();
     qreal initialVelocityX, initialVelocityY;
@@ -81,17 +103,39 @@ void Obstacle::parabolicMove()
     Y = initialY + (-initialVelocityY*timeLapsed) + (0.5*9.8*timeLapsed*timeLapsed);
     setPos(X,Y);
     timeLapsed += 0.1;
-
-
-    //this->setVelocity(this->getVelocity()+0.1);
     if(pos().x() + 10 < 0 || pos().x() +10 > 800){
         scene()->removeItem(this);
         deleteLater();
         qDebug() << "obstacle deleted";
     }
-    //checking collision
     checkCollision();
 }
+
+void Obstacle::oscillatoryMove(){
+    timer->start(50);
+    this->setDirection(-1);
+    this->setVelocity(7);
+    qreal X,Y;
+    qreal initialX = x(), initialY = y();
+    frequency = 0.8;
+    amplitude = 5;
+    qreal W = (2 * M_PI * frequency);
+    //this one is for an circular movement, because en X direction is oscillatory movement too
+    //X = initialX + (amplitude*(qCos(W*timeLapsed))*direction);
+    X = initialX + ((velocity*qSin(angle))*timeLapsed)*direction;
+    Y = initialY - amplitude*(qSin(W*timeLapsed));
+
+    setPos(X,Y);
+    timeLapsed += 0.016;
+
+    if(pos().x() + this->getSizeObstacle() < 0 || pos().x() + this->getSizeObstacle() > 800){
+        scene()->removeItem(this);
+        deleteLater();
+        qDebug() << "obstacle deleted";
+    }
+    checkCollision();
+}
+
 
 void Obstacle::checkCollision(){
     QList<QGraphicsItem *> collidingBullets = collidingItems();

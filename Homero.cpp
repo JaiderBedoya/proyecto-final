@@ -13,9 +13,6 @@ Homero::Homero(qreal characterWidth, qreal characterHeight, const QString &sprit
 void Homero::keyPressEvent(QKeyEvent* event){
         if(event->key() == Qt::Key_Space){
         qDebug()<<"space bar has been clicked";
-            if(!movementTimer->isActive()){
-                movementTimer->start(100);
-            }
             this->setIsFlying(true);
         }
 }
@@ -32,19 +29,28 @@ void Homero::setIsFlying(bool _isFlying)
 }
 
 void Homero::updateMovement(){
+
         if (isFlying) {
             verticalVelocity += jetPackImpulse;
+            this->setCounterSprite(1);
+            this->setSprite();
         }
-
-        verticalVelocity += gravity; // Aplica la gravedad
-        setY(y() + verticalVelocity); // Actualiza la posición vertical
+        else{
+            this->setCounterSprite(4);
+            this->setSprite();
+        }
+        verticalVelocity += gravity;
+        setY(y() + verticalVelocity);
 
         if (y() < 0) {
             setY(0);
+            this->setCounterSprite(5);
+            this->setSprite();
             verticalVelocity = 0;
-        } else if (y() > 490) { // Suponiendo un límite inferior de la pantalla
-            setY(490);
+        } else if (y() > 400) {
+            setY(400);
+            this->setCounterSprite(0);
+            this->setSprite();
             verticalVelocity = 0;
         }
 }
-
