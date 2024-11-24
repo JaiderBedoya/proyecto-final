@@ -17,6 +17,7 @@
 #include <QMediaPlayer>
 #include <QUrl>
 #include <QAudioOutput>
+#include <QGraphicsTextItem>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -44,6 +45,10 @@ public:
     void spawnRandomObstacle();
 
     QTimer* spawnRandomObstacleTimer;
+
+    QGraphicsTextItem* scoreItem;
+    void updateScore(int newScore);
+
 private:
     Ui::MainWindow *ui;
 
@@ -51,7 +56,9 @@ private:
     QGraphicsPixmapItem *secondBackGround;
     unsigned short int backGroundWidth;
     unsigned short int scrollSpeed;
+
 private slots:
     void scrollBackground();
+
 };
 #endif // MAINWINDOW_H

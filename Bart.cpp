@@ -6,9 +6,9 @@ QProgressBar *Bart::getBartHealthBar()
     return bartHealthBar;
 }
 
-void Bart::setBartHealthBar(int newHealthBar)
+void Bart::setBartHealthBar(int _healthBar)
 {
-    bartHealthBar->setValue(newHealthBar);
+    bartHealthBar->setValue(_healthBar);
     if(this->getHealth()< 100 && ayCaramba){
         QMediaPlayer* music = new QMediaPlayer;
         music->setSource(QUrl("qrc:/sounds/soundsEmancipation/ay-caramba.mp3"));
@@ -133,7 +133,7 @@ void Bart::updateMovement()
                 movementTimer->start(100);
             }
         //create obstacle
-        Obstacle  *projectile = new Obstacle(":/imagesEmancipation/BartBullet.png",10,10);
+        Obstacle  *projectile = new Obstacle(":/imagesEmancipation/BartBullet.png",10,10,"rock");
         projectile->timer->start(20);
 
         if(this->getDirectionSprite() == 1){

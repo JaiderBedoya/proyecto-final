@@ -199,7 +199,7 @@ void Enemy::kamehamehaAttack()
 
 void Enemy::createKamehameha(){
 
-    Obstacle  *kamehameha = new Obstacle(":/imagesEmancipation/KamehamehaParticle.png",30,30);
+    Obstacle  *kamehameha = new Obstacle(":/imagesEmancipation/KamehamehaParticle.png",30,30,"kamehameha");
     kamehameha->timer->start(20);
     kamehameha->setVelocity(25);
 
@@ -229,7 +229,7 @@ void Enemy::throwBullet()
     qDebug()<<"throwing parabolic Bullet";
     autonomousTimer->stop();
 
-    Obstacle  *cannonBall = new Obstacle(":/imagesEmancipation/HomeroBullet.png",30,30);
+    Obstacle  *cannonBall = new Obstacle(":/imagesEmancipation/HomeroBullet.png",30,30,"cannonBullet");
     cannonBall->setDirection(this->getDirectionSprite());
     cannonBall->timerMovPar->start(35);
 

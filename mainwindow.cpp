@@ -5,13 +5,12 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 {
     ui->setupUi(this);
 
-    QTimer* spawnRandomObstacleTimer = new QTimer();
-    connect(spawnRandomObstacleTimer, &QTimer::timeout, this, &MainWindow::spawnRandomObstacle);
-
     secondLevelScene();
-    spawnRandomObstacleTimer->start(3000);
 
-    //firstLevelScene();
+    /*
+    firstLevelScene();
+    qDebug()<<"Se finalizo el primer nivel";
+    */
 }
 
 void MainWindow::firstLevelScene(){
@@ -91,14 +90,6 @@ void MainWindow::secondLevelScene(){
 
     Homero *homero = new Homero(80.16,154,":/imagesEmancipation/HomeroSkate.png",6);
 
-    QPixmap* bartAndHomerFace = new QPixmap(":/imagesEmancipation/Bart y homero FotosCara.png");
-
-    QPixmap* homerFace = new QPixmap(bartAndHomerFace->copy(230,0,230,315));
-    QPixmap* scaledHomerFace = new QPixmap(homerFace->scaled(50,50,Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    QGraphicsPixmapItem* homerFaceItem = new QGraphicsPixmapItem(*scaledHomerFace);
-    homerFaceItem->setPos(20, 40);
-    scene->addItem(homerFaceItem);
-
     //QGraphicsProxyWidget* homerHealthBarProxy = scene->addWidget(homero->getHomerHealthBar());
     //homerHealthBarProxy->setPos(70, 65);
 
@@ -124,11 +115,39 @@ void MainWindow::secondLevelScene(){
     timer->start(30);
 
 
-
     homero->setFlag(QGraphicsItem::ItemIsFocusable);
 
     scene->addItem(homero);
     homero->setPos(10,300);
+
+    QPixmap* bartAndHomerFace = new QPixmap(":/imagesEmancipation/Bart y homero FotosCara.png");
+    QPixmap* coin = new QPixmap(":/imagesEmancipation/images-removebg-preview.png");
+    QPixmap* scaledCoin = new QPixmap(coin->scaled(50,50,Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    QGraphicsPixmapItem* coinScore = new QGraphicsPixmapItem(*scaledCoin);
+    coinScore->setPos(800-100,20);
+    scene->addItem(coinScore);
+
+
+    QPixmap* homerFace = new QPixmap(bartAndHomerFace->copy(230,0,230,315));
+    QPixmap* scaledHomerFace = new QPixmap(homerFace->scaled(50,50,Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    QGraphicsPixmapItem* homerFaceItem = new QGraphicsPixmapItem(*scaledHomerFace);
+    homerFaceItem->setPos(20,20);
+    scene->addItem(homerFaceItem);
+
+    QTimer* spawnRandomObstacleTimer = new QTimer();
+    connect(spawnRandomObstacleTimer, &QTimer::timeout, this, &MainWindow::spawnRandomObstacle);
+
+
+    scoreItem = new QGraphicsTextItem("X"+ QString::number(homero->getScoreGame()));
+    scoreItem->setDefaultTextColor(Qt::white);
+    scoreItem->setFont(QFont("Arial", 20));
+    scoreItem->setPos(800-50,35);
+    scene->addItem(scoreItem);
+
+    connect(homero, &Homero::scoreChanged, this, &MainWindow::updateScore);
+
+
+    spawnRandomObstacleTimer->start(2000);
 
 }
 
@@ -170,13 +189,57 @@ void MainWindow::scrollBackground() {
     }
 }
 
+void MainWindow::updateScore(int newScore){
+    scoreItem->setPlainText("X" + QString::number(newScore));
+}
+
 void MainWindow::spawnRandomObstacle(){
 
-    Obstacle* obstacle = new Obstacle(":/imagesEmancipation/Rocket.png",100,50);
-    ui->graphicsView->scene()->addItem(obstacle);
-    obstacle->setPos(700,300);
-    obstacle->oscillatoryTimer->start(50);
+    unsigned short int randomNumber = QRandomGenerator::global()->bounded(3);
+    unsigned short int randomYPosition = QRandomGenerator::global()->bounded(100,500);
+    Obstacle* obstacle = new Obstacle(":/imagesEmancipation/duff-removebg-preview.png",50,100,"duff");
+    Obstacle* obstacle2 = new Obstacle(":/imagesEmancipation/images-removebg-preview.png",40,40,"coin");
+    Obstacle* obstacle3 = new Obstacle(":/imagesEmancipation/HomeroBullet.png",40,40,"cannonBullet");
 
+    switch (randomNumber) {
+    case 0:
+
+        ui->graphicsView->scene()->addItem(obstacle);
+        obstacle->setPos(750,300);
+        obstacle->oscillatoryTimer->start(50);
+        /*
+        ui->graphicsView->scene()->addItem(obstacle2);
+        obstacle2->setPos(750,randomYPosition);
+        obstacle2->timer->start(50);
+        obstacle2->setDirection(-1);
+        */
+        break;
+    case 1:
+
+        ui->graphicsView->scene()->addItem(obstacle2);
+        obstacle2->setPos(750,randomYPosition);
+        obstacle2->timer->start(50);
+        obstacle2->setDirection(-1);
+
+
+        break;
+    case 2:
+        /*
+        ui->graphicsView->scene()->addItem(obstacle3);
+        obstacle3->setPos(750,0);
+        obstacle3->timerMovPar->start(50);
+        obstacle3->setDirection(-1);
+        obstacle3->setAngle(0);
+        */
+        ui->graphicsView->scene()->addItem(obstacle2);
+        obstacle2->setPos(750,randomYPosition);
+        obstacle2->timer->start(50);
+        obstacle2->setDirection(-1);
+        break;
+    default:
+        break;
+    }
 }
+
 
 

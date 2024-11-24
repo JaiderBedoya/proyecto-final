@@ -25,7 +25,21 @@ qreal Obstacle::getFrequency()
     return frequency;
 }
 
-Obstacle::Obstacle(const QString& obstacleImage, qreal size, qreal sizeHeight){
+void Obstacle::setAngle(qreal _angle)
+{
+    angle = _angle;
+}
+
+QString Obstacle::getIdentificator()
+{
+    return identificator;
+}
+
+Obstacle::Obstacle(){
+
+}
+
+Obstacle::Obstacle(const QString& obstacleImage, qreal size, qreal sizeHeight, QString _identificator) :identificator(_identificator){
 
     QPixmap projectileImage(obstacleImage);
 
@@ -112,7 +126,7 @@ void Obstacle::parabolicMove()
 }
 
 void Obstacle::oscillatoryMove(){
-    timer->start(50);
+    this->timer->start(50);
     this->setDirection(-1);
     this->setVelocity(7);
     qreal X,Y;
@@ -126,6 +140,8 @@ void Obstacle::oscillatoryMove(){
     Y = initialY - amplitude*(qSin(W*timeLapsed));
 
     setPos(X,Y);
+    qreal currentRotation = this->rotation();  // Obtener la rotación actual
+    this->setRotation(currentRotation + 20);
     timeLapsed += 0.016;
 
     if(pos().x() + this->getSizeObstacle() < 0 || pos().x() + this->getSizeObstacle() > 800){
@@ -138,13 +154,13 @@ void Obstacle::oscillatoryMove(){
 
 
 void Obstacle::checkCollision(){
-    QList<QGraphicsItem *> collidingBullets = collidingItems();
-    for(unsigned short int i = 0; i < collidingBullets.size();i++){
+    QList<QGraphicsItem *> collidingItemsWithObstacle = collidingItems();
+    for(unsigned short int i = 0; i < collidingItemsWithObstacle.size();i++){
 
 
-        if(typeid(*(collidingBullets[i])) == typeid(Enemy) && this->getSizeObstacle() == 10){
+        if(typeid(*(collidingItemsWithObstacle[i])) == typeid(Enemy) && this->getIdentificator() == "rock"){
 
-            Enemy* enemyColliding = dynamic_cast<Enemy*>(collidingBullets[i]);
+            Enemy* enemyColliding = dynamic_cast<Enemy*>(collidingItemsWithObstacle[i]);
             if (enemyColliding) {
 
                 enemyColliding->setHealth((enemyColliding->getHealth()-2));
@@ -159,9 +175,9 @@ void Obstacle::checkCollision(){
                 deleteLater();
             }
         }
-        else if(typeid(*(collidingBullets[i])) == typeid(Bart) && this->getSizeObstacle() == 30){
+        else if(typeid(*(collidingItemsWithObstacle[i])) == typeid(Bart) && (this->getIdentificator() == "kamehameha" || this->getIdentificator() == "cannonBullet")){
 
-            Bart* protagonistReceivingDamage = dynamic_cast<Bart*>(collidingBullets[i]);
+            Bart* protagonistReceivingDamage = dynamic_cast<Bart*>(collidingItemsWithObstacle[i]);
 
             if (protagonistReceivingDamage) {
 
@@ -178,6 +194,16 @@ void Obstacle::checkCollision(){
                 deleteLater();
             }
 
+        }
+        if(typeid(*(collidingItemsWithObstacle[i])) == typeid(Homero) && this->getIdentificator() == "coin"){
+
+            Homero* homeroGiveCoin = dynamic_cast<Homero*>(collidingItemsWithObstacle[i]);
+            if (homeroGiveCoin) {
+                scene()->removeItem(this);
+                deleteLater();
+                qDebug() << "obstacle deleted";
+                homeroGiveCoin->increaseScore(1);
+            }
         }
     }
 }

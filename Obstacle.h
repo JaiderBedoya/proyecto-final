@@ -3,6 +3,7 @@
 
 #include "Enemy.h"
 #include "Bart.h"
+#include "Homero.h"
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 #include <QObject>
@@ -19,8 +20,10 @@ private:
     short int direction = 1;
     qreal timeLapsed = 0;
     qreal velocity,angle,sizeObstacle, amplitude, frequency;
+    QString identificator;
 public:
-    Obstacle(const QString& obstacleImage, qreal size, qreal sizeHeight);
+    Obstacle();
+    Obstacle(const QString& obstacleImage, qreal size, qreal sizeHeight, QString _identificator);
 
     qreal getTimeLapsed();
     qreal getVelocity();
@@ -43,6 +46,10 @@ public:
     void setFrequency(qreal newFrequency);
 
     qreal getFrequency();
+
+    void setAngle(qreal newAngle);
+
+    QString getIdentificator();
 
 public slots:
     void move();

@@ -20,7 +20,7 @@ public:
     void keyReleaseEvent(QKeyEvent* event);
 
     QProgressBar *getBartHealthBar();
-    void setBartHealthBar(int newHealthBar);
+    void setBartHealthBar(int _healthBar);
     void setCanShoot(bool _canShoot);
     void setAyCaramba(bool _ayCaramba);
 

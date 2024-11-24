@@ -13,6 +13,7 @@
 #include <QGraphicsProxyWidget>
 #include <QMediaPlayer>
 #include <QAudioOutput>
+#include <QLabel>
 
 class Character : public QObject , public QGraphicsPixmapItem
 {
