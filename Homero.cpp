@@ -24,6 +24,11 @@ Homero::Homero(qreal characterWidth, qreal characterHeight, const QString &sprit
     QTimer* timerHomero = new QTimer(this);
     connect(timerHomero, &QTimer::timeout, this, &Homero::updateMovement);
     timerHomero->start(16);
+
+    homerHealthBar = new QProgressBar();
+    homerHealthBar->setRange(0, 100);
+    homerHealthBar->setValue(this->getHealth());
+    homerHealthBar->setTextVisible(false);
 }
 
 void Homero::keyPressEvent(QKeyEvent* event){
@@ -32,9 +37,30 @@ void Homero::keyPressEvent(QKeyEvent* event){
             this->setIsFlying(true);
         }
         //Change gravity with the S key
+        /*
         else if(event->key() == Qt::Key_S){
             gravity > 0 && jetPackImpulse < 0 ? gravity *= 1, jetPackImpulse *= 1 : gravity *= -1, jetPackImpulse *= -1;
         }
+        */
+}
+
+QProgressBar *Homero::getHomerHealthBar()
+{
+    return homerHealthBar;
+}
+
+void Homero::setHomerHealthBar(int newHealthBar)
+{
+    homerHealthBar->setValue(newHealthBar);
+    if(this->getHealth() < 100){
+        QMediaPlayer* music = new QMediaPlayer;
+        music->setSource(QUrl("qrc:/sounds/soundsEmancipation/Voicy_Homer Simpson_ Doh 3.mp3"));
+        QAudioOutput* audioOutput = new QAudioOutput(this);
+
+        music->setAudioOutput(audioOutput);
+        audioOutput->setVolume(0.5);
+        music->play();
+    }
 }
 
 void Homero::keyReleaseEvent(QKeyEvent* event){
@@ -63,13 +89,13 @@ void Homero::updateMovement(){
         verticalVelocity += gravity;
         setY(y() + verticalVelocity);
 
-        if (y() < 0) {
-            setY(0);
+        if (y() < 75) {
+            setY(75);
             this->setCounterSprite(5);
             this->setSprite();
             verticalVelocity = 0;
-        } else if (y() > 400) {
-            setY(400);
+        } else if (y() > 450) {
+            setY(450);
             this->setCounterSprite(0);
             this->setSprite();
             verticalVelocity = 0;

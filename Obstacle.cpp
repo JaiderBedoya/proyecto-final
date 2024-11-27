@@ -35,11 +35,20 @@ QString Obstacle::getIdentificator()
     return identificator;
 }
 
+void Obstacle::setRotate(bool _rotate)
+{
+    rotate = _rotate;
+}
+
+bool Obstacle::getRotate(){
+    return rotate;
+}
+
 Obstacle::Obstacle(){
 
 }
 
-Obstacle::Obstacle(const QString& obstacleImage, qreal size, qreal sizeHeight, QString _identificator) :identificator(_identificator){
+Obstacle::Obstacle(const QString& obstacleImage, qreal size, qreal sizeHeight, QString _identificator) :identificator(_identificator), rotate(false){
 
     QPixmap projectileImage(obstacleImage);
 
@@ -96,7 +105,7 @@ qreal Obstacle::getVelocity()
 void Obstacle::move()
 {
     setPos(x() + (velocity*direction) ,y());
-    if(pos().x() + 10 < 0 || pos().x() +10 > 800){
+    if(pos().x() + this->getSizeObstacle() < 0 || pos().x() + this->getSizeObstacle() > 800){
         scene()->removeItem(this);
         deleteLater();
         qDebug() << "obstacle deleted";
@@ -125,8 +134,10 @@ void Obstacle::parabolicMove()
     checkCollision();
 }
 
+
 void Obstacle::oscillatoryMove(){
-    this->timer->start(50);
+
+    //this->timer->start(50);
     this->setDirection(-1);
     this->setVelocity(7);
     qreal X,Y;
@@ -140,16 +151,26 @@ void Obstacle::oscillatoryMove(){
     Y = initialY - amplitude*(qSin(W*timeLapsed));
 
     setPos(X,Y);
-    qreal currentRotation = this->rotation();  // Obtener la rotación actual
-    this->setRotation(currentRotation + 20);
+    if(rotate){
+        qreal currentRotation = this->rotation();  // Obtener la rotación actual
+        this->setRotation(currentRotation + 20);
+    }
+
     timeLapsed += 0.016;
 
     if(pos().x() + this->getSizeObstacle() < 0 || pos().x() + this->getSizeObstacle() > 800){
-        scene()->removeItem(this);
-        deleteLater();
-        qDebug() << "obstacle deleted";
+        if (!(this->scene() == nullptr)) {
+            scene()->removeItem(this);
+            deleteLater();
+            qDebug() << "obstacle deleted";
+        }
+
     }
     checkCollision();
+}
+
+void Obstacle::circularMovement(){
+
 }
 
 
@@ -203,6 +224,30 @@ void Obstacle::checkCollision(){
                 deleteLater();
                 qDebug() << "obstacle deleted";
                 homeroGiveCoin->increaseScore(1);
+
+            }
+        }
+        else if(typeid(*(collidingItemsWithObstacle[i])) == typeid(Homero) && (this->getIdentificator() == "duff" || this->getIdentificator() == "rocket" || this->getIdentificator() == "skate" || this->getIdentificator() == "skateRail")){
+            Homero* homeroColliding = dynamic_cast<Homero*>(collidingItemsWithObstacle[i]);
+            if(homeroColliding){
+
+                if(this->getIdentificator() == "skateRail"){
+                    homeroColliding->setHealth((homeroColliding->getHealth()-5));
+                    homeroColliding->setHomerHealthBar((homeroColliding->getHealth()-5));
+                }
+                else{
+                    scene()->removeItem(this);
+                    deleteLater();
+                    qDebug() << "obstacle deleted";
+                    homeroColliding->setHealth((homeroColliding->getHealth()-15));
+                    homeroColliding->setHomerHealthBar((homeroColliding->getHealth()-15));
+                }
+                //Homero lost
+                if (homeroColliding->getHealth() <= 0) {
+                    homeroColliding->setHomerHealthBar(0);
+                    scene()->removeItem(homeroColliding);
+                    delete homeroColliding;
+                }
             }
         }
     }

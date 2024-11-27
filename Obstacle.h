@@ -21,6 +21,7 @@ private:
     qreal timeLapsed = 0;
     qreal velocity,angle,sizeObstacle, amplitude, frequency;
     QString identificator;
+    bool rotate;
 public:
     Obstacle();
     Obstacle(const QString& obstacleImage, qreal size, qreal sizeHeight, QString _identificator);
@@ -29,6 +30,9 @@ public:
     qreal getVelocity();
     qreal getSizeObstacle();
     qreal getAmplitude();
+    qreal getFrequency();
+    QString getIdentificator();
+    bool getRotate();
 
     QTimer *timerMovPar;
     QTimer* timer;
@@ -40,17 +44,13 @@ public:
     void setTimeLapsed(qreal _timeLapsed);
     void setVelocity(qreal _velocity);
     void setAmplitude(qreal newAmplitude);
+    void setRotate(bool newRotate);
+    void setFrequency(qreal newFrequency);
+    void setAngle(qreal newAngle);
 
     void checkCollision();
 
-    void setFrequency(qreal newFrequency);
-
-    qreal getFrequency();
-
-    void setAngle(qreal newAngle);
-
-    QString getIdentificator();
-
+    void circularMovement();
 public slots:
     void move();
     void parabolicMove();

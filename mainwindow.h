@@ -18,6 +18,9 @@
 #include <QUrl>
 #include <QAudioOutput>
 #include <QGraphicsTextItem>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QDialog>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -33,6 +36,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void initialMenu();
     void firstLevelScene();
     void secondLevelScene();
 
@@ -49,6 +53,8 @@ public:
     QGraphicsTextItem* scoreItem;
     void updateScore(int newScore);
 
+    void exit();
+    void mainMenu();
 private:
     Ui::MainWindow *ui;
 
@@ -57,8 +63,15 @@ private:
     unsigned short int backGroundWidth;
     unsigned short int scrollSpeed;
 
+    QGraphicsScene* sceneMenu;
+    QGraphicsScene* sceneLevelOne;
+    QGraphicsScene* sceneLevelTwo;
+    QGraphicsProxyWidget *proxy;
+
 private slots:
     void scrollBackground();
-
+    void on_levelOneButton_clicked();
+    void on_levelTwoButton_clicked();
+    void on_exitButton_clicked();
 };
 #endif // MAINWINDOW_H
