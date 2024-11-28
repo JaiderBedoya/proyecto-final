@@ -10,6 +10,7 @@ private:
     int scoreGame = 0;
     bool isFlying;
     QTimer *flyingTimer;
+    QProgressBar* homerHealthBar;
 
 public:
     Homero();
@@ -17,13 +18,14 @@ public:
     void keyPressEvent(QKeyEvent* event);
     void keyReleaseEvent(QKeyEvent* event);
 
-    void setIsFlying(bool _isFlying);
+    void setScoreGame(int newScoreGame);
+    void increaseScore(int newScore);
 
+    QProgressBar *getHomerHealthBar();
     int getScoreGame();
 
-    void setScoreGame(int newScoreGame);
-
-    void increaseScore(int newScore);
+    void setHomerHealthBar(int newHealthBar);
+    void setIsFlying(bool _isFlying);
 
 public slots:
     void updateMovement();

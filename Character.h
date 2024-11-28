@@ -65,7 +65,10 @@ public:
 
     void setCoordinateSpriteY(int _CoordinateSpriteY);
 
-public slots:
+    void emitWinOrLost(bool win);
+
+signals:
+    void winOrLost(bool win);
 };
 
 #endif // CHARACTER_H

@@ -4,6 +4,9 @@ qreal Obstacle::getSizeObstacle()
 {
     return sizeObstacle;
 }
+qreal Obstacle::getSizeHeight(){
+    return sizeHeight;
+}
 
 void Obstacle::setAmplitude(qreal _amplitude)
 {
@@ -42,6 +45,11 @@ void Obstacle::setRotate(bool _rotate)
 
 bool Obstacle::getRotate(){
     return rotate;
+}
+
+void Obstacle::setSizeHeight(qreal _sizeHeight)
+{
+    sizeHeight = _sizeHeight;
 }
 
 Obstacle::Obstacle(){
@@ -126,7 +134,7 @@ void Obstacle::parabolicMove()
     Y = initialY + (-initialVelocityY*timeLapsed) + (0.5*9.8*timeLapsed*timeLapsed);
     setPos(X,Y);
     timeLapsed += 0.1;
-    if(pos().x() + 10 < 0 || pos().x() +10 > 800){
+    if(pos().x() + this->getSizeObstacle() < 0 || pos().x() + this->getSizeObstacle() > 800){
         scene()->removeItem(this);
         deleteLater();
         qDebug() << "obstacle deleted";
@@ -189,8 +197,7 @@ void Obstacle::checkCollision(){
                 //Homero lost
                 if (enemyColliding->getHealth() <= 0) {
                     enemyColliding->setHomerHealthBar(0);
-                    scene()->removeItem(enemyColliding);
-                    delete enemyColliding;
+                    enemyColliding->emitWinOrLost(true);
                 }
                 scene()->removeItem(this);
                 deleteLater();
@@ -208,8 +215,7 @@ void Obstacle::checkCollision(){
                 //Bart Lost
                 if (protagonistReceivingDamage->getHealth() <= 0) {
                     protagonistReceivingDamage->setBartHealthBar(0);
-                    scene()->removeItem(protagonistReceivingDamage);
-                    delete protagonistReceivingDamage;
+                    protagonistReceivingDamage->emitWinOrLost(false);
                 }
                 scene()->removeItem(this);
                 deleteLater();
@@ -224,6 +230,9 @@ void Obstacle::checkCollision(){
                 deleteLater();
                 qDebug() << "obstacle deleted";
                 homeroGiveCoin->increaseScore(1);
+                if(homeroGiveCoin->getScoreGame() == 10){
+                    homeroGiveCoin->emitWinOrLost(true);
+                }
 
             }
         }
@@ -245,8 +254,9 @@ void Obstacle::checkCollision(){
                 //Homero lost
                 if (homeroColliding->getHealth() <= 0) {
                     homeroColliding->setHomerHealthBar(0);
-                    scene()->removeItem(homeroColliding);
-                    delete homeroColliding;
+                    homeroColliding->emitWinOrLost(false);
+
+                    qDebug()<<"Im here in the winOrLostCondition Function";
                 }
             }
         }

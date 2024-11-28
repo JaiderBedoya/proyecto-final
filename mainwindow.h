@@ -47,14 +47,20 @@ public:
     unsigned short getScrollSpeed();
 
     void spawnRandomObstacle();
-
-    QTimer* spawnRandomObstacleTimer;
-
-    QGraphicsTextItem* scoreItem;
     void updateScore(int newScore);
+    void winOrLostCondition(bool win);
 
     void exit();
     void mainMenu();
+    void clearLevelScenes();
+
+    void setFirstLevelCreated(bool _firstLevelCreated);
+    void setSecondLevelCreated(bool _secondLevelCreated);
+
+    bool getFirstLevelCreated();
+    bool getSecondLevelCreated();
+
+
 private:
     Ui::MainWindow *ui;
 
@@ -66,12 +72,52 @@ private:
     QGraphicsScene* sceneMenu;
     QGraphicsScene* sceneLevelOne;
     QGraphicsScene* sceneLevelTwo;
-    QGraphicsProxyWidget *proxy;
+    QGraphicsTextItem* scoreItem;
+
+    bool firstLevelCreated, secondLevelCreated;
+
+
+    //Necessary items for first level
+
+    QPixmap* bartFace;
+    QPixmap* scaledBartFace;
+    QGraphicsPixmapItem* bartFaceItem;
+    Bart *bart;
+    Enemy *homeroEnemy;
+    QGraphicsProxyWidget* bartHealthBarProxy;
+    QMediaPlayer* musicLevelOne;
+    QAudioOutput* audioOutputLevelOne;
+
+
+    //Necessary items for second level
+
+
+    Homero *homero;
+    QTimer *scrollTimer;
+    QPixmap* coin;
+    QPixmap* scaledCoin;
+    QGraphicsPixmapItem* coinScore;
+    QTimer* spawnRandomObstacleTimer = new QTimer();
+    QMediaPlayer* musicLevelTwo;
+    QAudioOutput* audioOutputLevelTwo;
+
+
+    //Necessary items for both levels
+
+
+     QGraphicsProxyWidget* homerHealthBarProxy;
+     QPixmap* bartAndHomerFace;
+     QPixmap* homerFace;
+     QPixmap* scaledHomerFace;
+     QGraphicsPixmapItem* homerFaceItem;
+
 
 private slots:
     void scrollBackground();
     void on_levelOneButton_clicked();
     void on_levelTwoButton_clicked();
     void on_exitButton_clicked();
+    void on_backToMenuButton_clicked();
+    void on_backToMenuButton_2_clicked();
 };
 #endif // MAINWINDOW_H

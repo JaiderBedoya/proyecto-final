@@ -19,7 +19,7 @@ class Obstacle: public QObject, public QGraphicsPixmapItem
 private:
     short int direction = 1;
     qreal timeLapsed = 0;
-    qreal velocity,angle,sizeObstacle, amplitude, frequency;
+    qreal velocity,angle,sizeObstacle,sizeHeight, amplitude, frequency;
     QString identificator;
     bool rotate;
 public:
@@ -29,6 +29,7 @@ public:
     qreal getTimeLapsed();
     qreal getVelocity();
     qreal getSizeObstacle();
+    qreal getSizeHeight();
     qreal getAmplitude();
     qreal getFrequency();
     QString getIdentificator();
@@ -51,6 +52,9 @@ public:
     void checkCollision();
 
     void circularMovement();
+
+    void setSizeHeight(qreal newSizeHeight);
+
 public slots:
     void move();
     void parabolicMove();

@@ -8,6 +8,11 @@ Character::Character()
 
 }
 
+void Character::emitWinOrLost(bool win)
+{
+    emit winOrLost(win);
+}
+
 Character::Character(qreal characterWidth_,qreal characterHeight_, QString spritePath, unsigned short int _numberOfHorizontalSprites): characterWidth(characterWidth_), characterHeight(characterHeight_), numberOfHorizontalSprites(_numberOfHorizontalSprites){
     //setting the sprite
     movementTimer = new QTimer(this);
