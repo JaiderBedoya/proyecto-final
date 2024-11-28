@@ -36,31 +36,27 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void initialMenu();
-    void firstLevelScene();
-    void secondLevelScene();
-
     void setBackGroundWidth(unsigned short _backGroundWidth);
     void setScrollSpeed(unsigned short _scrollSpeed);
-
-    unsigned short getBackGroundWidth();
-    unsigned short getScrollSpeed();
-
-    void spawnRandomObstacle();
-    void updateScore(int newScore);
-    void winOrLostCondition(bool win);
-
-    void exit();
-    void mainMenu();
-    void clearLevelScenes();
-
     void setFirstLevelCreated(bool _firstLevelCreated);
     void setSecondLevelCreated(bool _secondLevelCreated);
 
+    unsigned short getBackGroundWidth();
+    unsigned short getScrollSpeed();
     bool getFirstLevelCreated();
     bool getSecondLevelCreated();
 
 
+    void spawnRandomObstacle();
+    void updateScore(int newScore);
+    void winOrLostCondition(bool win, unsigned short int sceneNumber);
+    void initialMenu();
+    void firstLevelScene();
+    void secondLevelScene();
+    void exit();
+    void mainMenu();
+    void clearSecondLevel();
+    void clearFirstScene();
 private:
     Ui::MainWindow *ui;
 

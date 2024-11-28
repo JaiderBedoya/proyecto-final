@@ -133,7 +133,7 @@ void Bart::updateMovement()
                 movementTimer->start(100);
             }
         //create obstacle
-        Obstacle  *projectile = new Obstacle(":/imagesEmancipation/BartBullet.png",10,10,"rock");
+        Obstacle  *projectile = new Obstacle(":/imagesEmancipation/BartBullet.png",10,10,"rock",1);
         projectile->timer->start(20);
 
         if(this->getDirectionSprite() == 1){

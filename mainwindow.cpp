@@ -74,7 +74,6 @@ void MainWindow::mainMenu(){
 
 
 void MainWindow::firstLevelScene(){
-    clearLevelScenes();
     this->setFirstLevelCreated(true);
 
     //Create a scene
@@ -152,20 +151,8 @@ void MainWindow::firstLevelScene(){
 
 }
 
-void MainWindow::clearLevelScenes(){
+void MainWindow::clearSecondLevel(){
 
-    if(firstLevelCreated){
-        delete sceneLevelOne;
-        sceneLevelOne = nullptr;
-        delete bartFace;
-        delete scaledBartFace;
-        delete musicLevelOne;
-        delete audioOutputLevelOne;
-
-        delete bartAndHomerFace;
-        delete homerFace;
-        delete scaledHomerFace;
-    }
     if(secondLevelCreated){
 
         delete sceneLevelTwo;
@@ -181,6 +168,23 @@ void MainWindow::clearLevelScenes(){
         delete homerFace;
         delete scaledHomerFace;
     }
+}
+
+void MainWindow::clearFirstScene(){
+
+    if(firstLevelCreated){
+        delete sceneLevelOne;
+        sceneLevelOne = nullptr;
+        delete bartFace;
+        delete scaledBartFace;
+        delete musicLevelOne;
+        delete audioOutputLevelOne;
+
+        delete bartAndHomerFace;
+        delete homerFace;
+        delete scaledHomerFace;
+    }
+
 }
 
 void MainWindow::setFirstLevelCreated(bool _firstLevelCreated)
@@ -203,7 +207,6 @@ bool MainWindow::getSecondLevelCreated(){
 
 void MainWindow::secondLevelScene(){
 
-    clearLevelScenes();
     this->setSecondLevelCreated(true);
 
     sceneLevelTwo = new QGraphicsScene(this);
@@ -329,11 +332,14 @@ void MainWindow::updateScore(int newScore){
     scoreItem->setPlainText("X" + QString::number(newScore));
 }
 
-void MainWindow::winOrLostCondition(bool win){
-    if(spawnRandomObstacleTimer->isActive()){
-        spawnRandomObstacleTimer->stop();
-    }
+void MainWindow::winOrLostCondition(bool win, unsigned short int sceneNumber){
 
+    if(sceneNumber == 1){
+        clearFirstScene();
+    }
+    else if(sceneNumber == 2){
+        clearSecondLevel();
+    }
     qDebug()<<"Im here in the winOrLostCondition Function";
     if(win){
         qDebug()<<"Im here in the win Function";
@@ -350,11 +356,11 @@ void MainWindow::spawnRandomObstacle(){
     unsigned short int randomNumber = QRandomGenerator::global()->bounded(4);
     unsigned short int randomYPosition = QRandomGenerator::global()->bounded(100,500);
     unsigned short int randomYPositionCoin = QRandomGenerator::global()->bounded(75,500);
-    Obstacle* obstacle = new Obstacle(":/imagesEmancipation/duff-removebg-preview.png",50,100,"duff");
-    Obstacle* obstacle2 = new Obstacle(":/imagesEmancipation/images-removebg-preview.png",40,40,"coin");
-    Obstacle* obstacle3 = new Obstacle(":/imagesEmancipation/Rocket.png",100,50,"rocket");
-    Obstacle* obstacle4 = new Obstacle(":/imagesEmancipation/skateRail.png",280,180,"skateRail");
-    Obstacle* obstacle5 = new Obstacle(":/imagesEmancipation/skate-removebg-preview.png",120,60,"skate");
+    Obstacle* obstacle = new Obstacle(":/imagesEmancipation/duff-removebg-preview.png",50,100,"duff",2);
+    Obstacle* obstacle2 = new Obstacle(":/imagesEmancipation/images-removebg-preview.png",40,40,"coin",2);
+    Obstacle* obstacle3 = new Obstacle(":/imagesEmancipation/Rocket.png",100,50,"rocket",2);
+    Obstacle* obstacle4 = new Obstacle(":/imagesEmancipation/skateRail.png",280,180,"skateRail",2);
+    Obstacle* obstacle5 = new Obstacle(":/imagesEmancipation/skate-removebg-preview.png",120,60,"skate",2);
 
     switch (randomNumber) {
     case 0:

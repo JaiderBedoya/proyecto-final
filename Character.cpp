@@ -8,9 +8,9 @@ Character::Character()
 
 }
 
-void Character::emitWinOrLost(bool win)
+void Character::emitWinOrLost(bool win, unsigned short int sceneNumber)
 {
-    emit winOrLost(win);
+    emit winOrLost(win,sceneNumber);
 }
 
 Character::Character(qreal characterWidth_,qreal characterHeight_, QString spritePath, unsigned short int _numberOfHorizontalSprites): characterWidth(characterWidth_), characterHeight(characterHeight_), numberOfHorizontalSprites(_numberOfHorizontalSprites){

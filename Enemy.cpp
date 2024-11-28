@@ -199,7 +199,7 @@ void Enemy::kamehamehaAttack()
 
 void Enemy::createKamehameha(){
 
-    Obstacle  *kamehameha = new Obstacle(":/imagesEmancipation/KamehamehaParticle.png",30,30,"kamehameha");
+    Obstacle  *kamehameha = new Obstacle(":/imagesEmancipation/KamehamehaParticle.png",30,30,"kamehameha",1);
     kamehameha->timer->start(20);
     kamehameha->setVelocity(25);
 
@@ -229,7 +229,7 @@ void Enemy::throwBullet()
     qDebug()<<"throwing parabolic Bullet";
     autonomousTimer->stop();
 
-    Obstacle  *cannonBall = new Obstacle(":/imagesEmancipation/HomeroBullet.png",30,30,"cannonBullet");
+    Obstacle  *cannonBall = new Obstacle(":/imagesEmancipation/HomeroBullet.png",30,30,"cannonBullet",1);
     cannonBall->setDirection(this->getDirectionSprite());
     cannonBall->timerMovPar->start(35);
 
@@ -310,9 +310,8 @@ void Enemy::checkProtagonistCollision(){
                 bart->setBartHealthBar(bart->getHealth()-2);
 
                 if (bart->getHealth() <= 0) {
-                     bart->setBartHealthBar(0);
-                    scene()->removeItem(bart);
-                    delete bart;
+                    bart->setBartHealthBar(0);
+                    bart->emitWinOrLost(false,1);
                     qDebug() << "Bart defeated!";
                 }
             }

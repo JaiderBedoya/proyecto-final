@@ -52,11 +52,18 @@ void Obstacle::setSizeHeight(qreal _sizeHeight)
     sizeHeight = _sizeHeight;
 }
 
+void Obstacle::setObstacleLevel(unsigned short _obstacleLevel)
+{
+    obstacleLevel = _obstacleLevel;
+}
+unsigned short int Obstacle::getObstacleLevel(){
+    return obstacleLevel;
+}
 Obstacle::Obstacle(){
 
 }
 
-Obstacle::Obstacle(const QString& obstacleImage, qreal size, qreal sizeHeight, QString _identificator) :identificator(_identificator), rotate(false){
+Obstacle::Obstacle(const QString& obstacleImage, qreal size, qreal sizeHeight, QString _identificator, unsigned short int _obstacleLevel) :identificator(_identificator), rotate(false), obstacleLevel(_obstacleLevel){
 
     QPixmap projectileImage(obstacleImage);
 
@@ -186,77 +193,86 @@ void Obstacle::checkCollision(){
     QList<QGraphicsItem *> collidingItemsWithObstacle = collidingItems();
     for(unsigned short int i = 0; i < collidingItemsWithObstacle.size();i++){
 
+        if(this->getObstacleLevel() == 1){
+            if(typeid(*(collidingItemsWithObstacle[i])) == typeid(Enemy) && this->getIdentificator() == "rock"){
 
-        if(typeid(*(collidingItemsWithObstacle[i])) == typeid(Enemy) && this->getIdentificator() == "rock"){
+                Enemy* enemyColliding = dynamic_cast<Enemy*>(collidingItemsWithObstacle[i]);
+                if (enemyColliding) {
 
-            Enemy* enemyColliding = dynamic_cast<Enemy*>(collidingItemsWithObstacle[i]);
-            if (enemyColliding) {
-
-                enemyColliding->setHealth((enemyColliding->getHealth()-2));
-                enemyColliding->setHomerHealthBar((enemyColliding->getHealth()-2));
-                //Homero lost
-                if (enemyColliding->getHealth() <= 0) {
-                    enemyColliding->setHomerHealthBar(0);
-                    enemyColliding->emitWinOrLost(true);
+                    enemyColliding->setHealth((enemyColliding->getHealth()-50));
+                    enemyColliding->setHomerHealthBar((enemyColliding->getHealth()-50));
+                    //Homero lost
+                    if (enemyColliding->getHealth() <= 0) {
+                        enemyColliding->setHomerHealthBar(0);
+                        enemyColliding->emitWinOrLost(true,1);
+                    }
+                    else{
+                        scene()->removeItem(this);
+                        deleteLater();
+                    }
                 }
-                scene()->removeItem(this);
-                deleteLater();
             }
-        }
-        else if(typeid(*(collidingItemsWithObstacle[i])) == typeid(Bart) && (this->getIdentificator() == "kamehameha" || this->getIdentificator() == "cannonBullet")){
+            else if(typeid(*(collidingItemsWithObstacle[i])) == typeid(Bart) && (this->getIdentificator() == "kamehameha" || this->getIdentificator() == "cannonBullet")){
 
-            Bart* protagonistReceivingDamage = dynamic_cast<Bart*>(collidingItemsWithObstacle[i]);
+                Bart* protagonistReceivingDamage = dynamic_cast<Bart*>(collidingItemsWithObstacle[i]);
 
-            if (protagonistReceivingDamage) {
+                if (protagonistReceivingDamage) {
 
-                protagonistReceivingDamage->setHealth((protagonistReceivingDamage->getHealth()-20));
-                protagonistReceivingDamage->setBartHealthBar((protagonistReceivingDamage->getHealth()-20));
+                    protagonistReceivingDamage->setHealth((protagonistReceivingDamage->getHealth()-20));
+                    protagonistReceivingDamage->setBartHealthBar((protagonistReceivingDamage->getHealth()-20));
 
-                //Bart Lost
-                if (protagonistReceivingDamage->getHealth() <= 0) {
-                    protagonistReceivingDamage->setBartHealthBar(0);
-                    protagonistReceivingDamage->emitWinOrLost(false);
-                }
-                scene()->removeItem(this);
-                deleteLater();
-            }
+                    //Bart Lost
+                    if (protagonistReceivingDamage->getHealth() <= 0) {
+                        qDebug()<<"Bart perdio y se ejecuta lo proximo";
+                        protagonistReceivingDamage->setBartHealthBar(0);
+                        protagonistReceivingDamage->emitWinOrLost(false,1);
+                    }
+                    else{
+                        scene()->removeItem(this);
+                        deleteLater();
+                    }
 
-        }
-        if(typeid(*(collidingItemsWithObstacle[i])) == typeid(Homero) && this->getIdentificator() == "coin"){
-
-            Homero* homeroGiveCoin = dynamic_cast<Homero*>(collidingItemsWithObstacle[i]);
-            if (homeroGiveCoin) {
-                scene()->removeItem(this);
-                deleteLater();
-                qDebug() << "obstacle deleted";
-                homeroGiveCoin->increaseScore(1);
-                if(homeroGiveCoin->getScoreGame() == 10){
-                    homeroGiveCoin->emitWinOrLost(true);
                 }
 
             }
         }
-        else if(typeid(*(collidingItemsWithObstacle[i])) == typeid(Homero) && (this->getIdentificator() == "duff" || this->getIdentificator() == "rocket" || this->getIdentificator() == "skate" || this->getIdentificator() == "skateRail")){
-            Homero* homeroColliding = dynamic_cast<Homero*>(collidingItemsWithObstacle[i]);
-            if(homeroColliding){
+        else if(this->getObstacleLevel() == 2){
+            if(typeid(*(collidingItemsWithObstacle[i])) == typeid(Homero) && this->getIdentificator() == "coin"){
 
-                if(this->getIdentificator() == "skateRail"){
-                    homeroColliding->setHealth((homeroColliding->getHealth()-5));
-                    homeroColliding->setHomerHealthBar((homeroColliding->getHealth()-5));
-                }
-                else{
+                Homero* homeroGiveCoin = dynamic_cast<Homero*>(collidingItemsWithObstacle[i]);
+                if (homeroGiveCoin) {
                     scene()->removeItem(this);
                     deleteLater();
                     qDebug() << "obstacle deleted";
-                    homeroColliding->setHealth((homeroColliding->getHealth()-15));
-                    homeroColliding->setHomerHealthBar((homeroColliding->getHealth()-15));
-                }
-                //Homero lost
-                if (homeroColliding->getHealth() <= 0) {
-                    homeroColliding->setHomerHealthBar(0);
-                    homeroColliding->emitWinOrLost(false);
+                    homeroGiveCoin->increaseScore(1);
+                    if(homeroGiveCoin->getScoreGame() == 10){
+                        homeroGiveCoin->emitWinOrLost(true,2);
+                    }
 
-                    qDebug()<<"Im here in the winOrLostCondition Function";
+                }
+            }
+            else if(typeid(*(collidingItemsWithObstacle[i])) == typeid(Homero) && (this->getIdentificator() == "duff" || this->getIdentificator() == "rocket" || this->getIdentificator() == "skate" || this->getIdentificator() == "skateRail")){
+                Homero* homeroColliding = dynamic_cast<Homero*>(collidingItemsWithObstacle[i]);
+                if(homeroColliding){
+
+                    if(this->getIdentificator() == "skateRail"){
+                        homeroColliding->setHealth((homeroColliding->getHealth()-5));
+                        homeroColliding->setHomerHealthBar((homeroColliding->getHealth()-5));
+                    }
+                    else{
+                        scene()->removeItem(this);
+                        deleteLater();
+                        qDebug() << "obstacle deleted";
+                        homeroColliding->setHealth((homeroColliding->getHealth()-15));
+                        homeroColliding->setHomerHealthBar((homeroColliding->getHealth()-15));
+                    }
+                    //Homero lost
+                    if (homeroColliding->getHealth() <= 0) {
+                        homeroColliding->setHomerHealthBar(0);
+                        homeroColliding->emitWinOrLost(false,2);
+
+                        qDebug()<<"Im here in the winOrLostCondition Function";
+                    }
                 }
             }
         }

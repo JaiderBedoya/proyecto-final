@@ -65,10 +65,10 @@ public:
 
     void setCoordinateSpriteY(int _CoordinateSpriteY);
 
-    void emitWinOrLost(bool win);
+    void emitWinOrLost(bool win, unsigned short int sceneNumber);
 
 signals:
-    void winOrLost(bool win);
+    void winOrLost(bool win, unsigned short int sceneNumber);
 };
 
 #endif // CHARACTER_H

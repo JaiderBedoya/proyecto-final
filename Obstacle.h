@@ -22,9 +22,10 @@ private:
     qreal velocity,angle,sizeObstacle,sizeHeight, amplitude, frequency;
     QString identificator;
     bool rotate;
+    unsigned short int obstacleLevel;
 public:
     Obstacle();
-    Obstacle(const QString& obstacleImage, qreal size, qreal sizeHeight, QString _identificator);
+    Obstacle(const QString& obstacleImage, qreal size, qreal sizeHeight, QString _identificator, unsigned short int _obstacleLevel);
 
     qreal getTimeLapsed();
     qreal getVelocity();
@@ -54,6 +55,9 @@ public:
     void circularMovement();
 
     void setSizeHeight(qreal newSizeHeight);
+
+    void setObstacleLevel(unsigned short _obstacleLevel);
+    unsigned short int getObstacleLevel();
 
 public slots:
     void move();
