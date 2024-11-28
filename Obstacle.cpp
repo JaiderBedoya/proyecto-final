@@ -76,12 +76,15 @@ Obstacle::Obstacle(const QString& obstacleImage, qreal size, qreal sizeHeight, Q
     timer = new QTimer();
     timerMovPar = new QTimer();
     oscillatoryTimer = new QTimer();
+    circularTimer = new QTimer();
 
     connect(timer,SIGNAL(timeout()),this,SLOT(move()));
     connect(timerMovPar, &QTimer::timeout, this, [=]() {
         parabolicMove();
     });
+
     connect(oscillatoryTimer,SIGNAL(timeout()),this,SLOT(oscillatoryMove()));
+    connect(circularTimer,SIGNAL(timeout()),this,SLOT(circularMovement()));
 
     velocity = 15;
     angle = 45;
@@ -152,9 +155,7 @@ void Obstacle::parabolicMove()
 
 void Obstacle::oscillatoryMove(){
 
-    //this->timer->start(50);
     this->setDirection(-1);
-    this->setVelocity(7);
     qreal X,Y;
     qreal initialX = x(), initialY = y();
     frequency = 0.8;
@@ -167,7 +168,7 @@ void Obstacle::oscillatoryMove(){
 
     setPos(X,Y);
     if(rotate){
-        qreal currentRotation = this->rotation();  // Obtener la rotación actual
+        qreal currentRotation = this->rotation();
         this->setRotation(currentRotation + 20);
     }
 
@@ -185,6 +186,33 @@ void Obstacle::oscillatoryMove(){
 }
 
 void Obstacle::circularMovement(){
+    this->timer->start(30);
+    this->setDirection(-1);
+    qreal X,Y;
+    qreal initialX = x(), initialY = y();
+    frequency = 0.8;
+    amplitude = 5;
+    qreal W = (2 * M_PI * frequency);
+    X = initialX + (amplitude*(qCos(W*timeLapsed))*direction);
+    Y = initialY - amplitude*(qSin(W*timeLapsed));
+
+    setPos(X,Y);
+    if(rotate){
+        qreal currentRotation = this->rotation();
+        this->setRotation(currentRotation + 20);
+    }
+
+    timeLapsed += 0.016;
+
+    if(pos().x() + this->getSizeObstacle() < 0 || pos().x() + this->getSizeObstacle() > 800){
+        if (!(this->scene() == nullptr)) {
+            scene()->removeItem(this);
+            deleteLater();
+            qDebug() << "obstacle deleted";
+        }
+
+    }
+    checkCollision();
 
 }
 
@@ -199,8 +227,8 @@ void Obstacle::checkCollision(){
                 Enemy* enemyColliding = dynamic_cast<Enemy*>(collidingItemsWithObstacle[i]);
                 if (enemyColliding) {
 
-                    enemyColliding->setHealth((enemyColliding->getHealth()-50));
-                    enemyColliding->setHomerHealthBar((enemyColliding->getHealth()-50));
+                    enemyColliding->setHealth((enemyColliding->getHealth()-2));
+                    enemyColliding->setHomerHealthBar((enemyColliding->getHealth()-2));
                     //Homero lost
                     if (enemyColliding->getHealth() <= 0) {
                         enemyColliding->setHomerHealthBar(0);
@@ -231,9 +259,7 @@ void Obstacle::checkCollision(){
                         scene()->removeItem(this);
                         deleteLater();
                     }
-
                 }
-
             }
         }
         else if(this->getObstacleLevel() == 2){
@@ -270,8 +296,6 @@ void Obstacle::checkCollision(){
                     if (homeroColliding->getHealth() <= 0) {
                         homeroColliding->setHomerHealthBar(0);
                         homeroColliding->emitWinOrLost(false,2);
-
-                        qDebug()<<"Im here in the winOrLostCondition Function";
                     }
                 }
             }

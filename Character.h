@@ -14,6 +14,8 @@
 #include <QMediaPlayer>
 #include <QAudioOutput>
 #include <QLabel>
+#include <QFile>
+#include <QDate>
 
 class Character : public QObject , public QGraphicsPixmapItem
 {
@@ -67,6 +69,7 @@ public:
 
     void emitWinOrLost(bool win, unsigned short int sceneNumber);
 
+    void achievement(const QString &text);
 signals:
     void winOrLost(bool win, unsigned short int sceneNumber);
 };

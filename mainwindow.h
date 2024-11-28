@@ -57,6 +57,8 @@ public:
     void mainMenu();
     void clearSecondLevel();
     void clearFirstScene();
+    void winScreen(unsigned short level);
+    void LostScreen(unsigned short level);
 private:
     Ui::MainWindow *ui;
 
@@ -68,6 +70,9 @@ private:
     QGraphicsScene* sceneMenu;
     QGraphicsScene* sceneLevelOne;
     QGraphicsScene* sceneLevelTwo;
+    QGraphicsScene* sceneWin;
+    QGraphicsScene* sceneLose;
+
     QGraphicsTextItem* scoreItem;
 
     bool firstLevelCreated, secondLevelCreated;

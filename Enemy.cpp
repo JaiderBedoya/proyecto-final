@@ -98,7 +98,6 @@ void Enemy::autonomousMovement()
     movementTimer->start(100);
 
     this->setPos(x(),y()+moveValor);
-    this->checkProtagonistCollision();
     if(y() <= 340){
         moveValor = 10;
         qDebug() << "Bajando";
@@ -107,6 +106,7 @@ void Enemy::autonomousMovement()
         moveValor = -10;
         qDebug() << "Subiendo";
     }
+    this->checkProtagonistCollision();
 }
 
 void Enemy::aleatoryAttack(){
@@ -282,7 +282,7 @@ void Enemy::roll()
     }
 
     this->setPos(x()+moveValor,y());
-    this->checkProtagonistCollision();
+
     if(x() <= 0){
         moveValor = 20;
         qDebug() << "Girando a la derecha";
@@ -295,6 +295,7 @@ void Enemy::roll()
         rollCounter++;
         this->setDirectionSprite(-1);
     }
+    this->checkProtagonistCollision();
     }
 }
 

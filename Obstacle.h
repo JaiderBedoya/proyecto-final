@@ -39,6 +39,7 @@ public:
     QTimer *timerMovPar;
     QTimer* timer;
     QTimer* oscillatoryTimer;
+    QTimer* circularTimer;
     QTimer* randomSpawnTimer;
 
     void setSizeObstacle(qreal _sizeObstacle);
@@ -51,9 +52,6 @@ public:
     void setAngle(qreal newAngle);
 
     void checkCollision();
-
-    void circularMovement();
-
     void setSizeHeight(qreal newSizeHeight);
 
     void setObstacleLevel(unsigned short _obstacleLevel);
@@ -63,6 +61,7 @@ public slots:
     void move();
     void parabolicMove();
     void oscillatoryMove();
+    void circularMovement();
 };
 
 #endif // OBSTACLE_H

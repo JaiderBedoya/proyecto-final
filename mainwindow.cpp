@@ -8,46 +8,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     this->setGeometry(80,80,800,600);
     mainMenu();
 }
-/*
-void MainWindow::initialMenu(){
-
-    sceneMenu = new QGraphicsScene(this);
-    sceneMenu->setSceneRect(0,0,800,600);
-
-    // Crear contenedor para los botones
-    QVBoxLayout *layout = new QVBoxLayout;
-
-    // Crear botones
-    QPushButton *buttonLevelOne = new QPushButton("Nivel 1");
-    QPushButton *buttonLevelTwo = new QPushButton("Nivel 2");
-    QPushButton *buttonExit = new QPushButton("Salir");
-
-
-    // Agregar botones al layout
-    layout->addWidget(buttonLevelOne);
-    layout->addWidget(buttonLevelTwo);
-    layout->addWidget(buttonExit);
-    ui->graphicsView->setLayout(layout);
-
-    // Añadir el widget del menú a la escena
-    proxy = sceneMenu->addWidget(ui->graphicsView);
-    proxy->setPos(200, 100);
-
-    ui->graphicsView->setScene(sceneMenu);
-    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-    ui->graphicsView->show();
-    ui->graphicsView->setFixedSize(800,600);
-    ui->graphicsView->setGeometry(0,0,800,600);
-
-
-    // Conectar botones con sus funcionalidades
-    connect(buttonLevelOne, &QPushButton::clicked, this, &MainWindow::firstLevelScene);
-    connect(buttonLevelTwo, &QPushButton::clicked, this, &MainWindow::secondLevelScene);
-    connect(buttonExit, &QPushButton::clicked, this, &MainWindow::exit);
-
-}*/
 
 void MainWindow::exit(){
     close();
@@ -69,6 +29,84 @@ void MainWindow::mainMenu(){
     QPixmap backGroundPixmap(":/imagesEmancipation/HomeroVsTony.png");
     QBrush backGroundBrush(backGroundPixmap.scaled(ui->graphicsViewMenu->size(), Qt::KeepAspectRatioByExpanding));
     ui->graphicsViewMenu->setBackgroundBrush(backGroundBrush);
+}
+
+void MainWindow::winScreen(unsigned short int level){
+    QString imagePath;
+    if(level == 1){
+        imagePath = ":/imagesEmancipation/FirstLevelWin.png";
+    }
+    else if(level == 2){
+        imagePath = ":/imagesEmancipation/SecondLevelWin.PNG";
+    }
+    ui->stackedWidget->setCurrentIndex(3);
+    sceneWin = new QGraphicsScene(this);
+    sceneWin->setSceneRect(0,0,800,600);
+
+    ui->graphicsViewWin->setScene(sceneWin);
+    ui->graphicsViewWin->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graphicsViewWin->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    ui->graphicsViewWin->show();
+    ui->graphicsViewWin->setFixedSize(800,600);
+    ui->graphicsViewWin->setGeometry(0,0,800,600);
+
+    QPixmap backGroundPixmap(imagePath);
+    QBrush backGroundBrush(backGroundPixmap.scaled(ui->graphicsViewWin->size(), Qt::KeepAspectRatioByExpanding));
+    ui->graphicsViewWin->setBackgroundBrush(backGroundBrush);
+
+}
+
+void MainWindow::LostScreen(unsigned short int level){
+    QString imagePath;
+    if(level == 1){
+        imagePath = ":/imagesEmancipation/firstLevelLose.PNG";
+    }
+    else if(level == 2){
+        imagePath = ":/imagesEmancipation/secondLevelLost.PNG";
+    }
+    ui->stackedWidget->setCurrentIndex(4);
+    sceneLose = new QGraphicsScene(this);
+    sceneLose->setSceneRect(0,0,800,600);
+
+    ui->graphicsViewLose->setScene(sceneLose);
+    ui->graphicsViewLose->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graphicsViewLose->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    ui->graphicsViewLose->show();
+    ui->graphicsViewLose->setFixedSize(800,600);
+    ui->graphicsViewLose->setGeometry(0,0,800,600);
+
+    QPixmap backGroundPixmap(imagePath);
+    QBrush backGroundBrush(backGroundPixmap.scaled(ui->graphicsViewLose->size(), Qt::KeepAspectRatioByExpanding));
+    ui->graphicsViewLose->setBackgroundBrush(backGroundBrush);
+
+}
+
+void MainWindow::winOrLostCondition(bool win, unsigned short int sceneNumber){
+    if(spawnRandomObstacleTimer->isActive()){
+        spawnRandomObstacleTimer->stop();
+    }
+
+    if(sceneNumber == 1){
+        clearFirstScene();
+    }
+    else if(sceneNumber == 2){
+        clearSecondLevel();
+    }
+
+    if(win && sceneNumber == 1){
+        winScreen(1);
+    }
+    else if(win && sceneNumber == 2){
+        winScreen(2);
+    }
+    else if(!win && sceneNumber == 1){
+        LostScreen(1);
+    }
+    else if(!win && sceneNumber == 2){
+        LostScreen(2);
+    }
 }
 
 
@@ -173,6 +211,7 @@ void MainWindow::clearSecondLevel(){
 void MainWindow::clearFirstScene(){
 
     if(firstLevelCreated){
+        bart->achievement(QString::number(bart->getHealth()));
         delete sceneLevelOne;
         sceneLevelOne = nullptr;
         delete bartFace;
@@ -332,25 +371,6 @@ void MainWindow::updateScore(int newScore){
     scoreItem->setPlainText("X" + QString::number(newScore));
 }
 
-void MainWindow::winOrLostCondition(bool win, unsigned short int sceneNumber){
-
-    if(sceneNumber == 1){
-        clearFirstScene();
-    }
-    else if(sceneNumber == 2){
-        clearSecondLevel();
-    }
-    qDebug()<<"Im here in the winOrLostCondition Function";
-    if(win){
-        qDebug()<<"Im here in the win Function";
-        ui->stackedWidget->setCurrentIndex(3);
-    }
-    else if(!win){
-        qDebug()<<"Im here in the losy Function";
-        ui->stackedWidget->setCurrentIndex(4);
-    }
-}
-
 void MainWindow::spawnRandomObstacle(){
 
     unsigned short int randomNumber = QRandomGenerator::global()->bounded(4);
@@ -367,20 +387,14 @@ void MainWindow::spawnRandomObstacle(){
 
         qDebug()<<"duff created";
         ui->graphicsViewLevelTwo->scene()->addItem(obstacle);
+        obstacle->setRotate(true);
         obstacle->setPos(750,randomYPosition);
-        obstacle->oscillatoryTimer->start(50);
-        /*
-        ui->graphicsView->scene()->addItem(obstacle2);
-        obstacle2->setPos(750,randomYPosition);
-        obstacle2->timer->start(50);
-        obstacle2->setDirection(-1);
-        */
+        obstacle->circularTimer->start(50);
         break;
     case 1:
 
         qDebug()<<"skate created";
         ui->graphicsViewLevelTwo->scene()->addItem(obstacle5);
-        obstacle5->setRotate(true);
         obstacle5->setPos(640,randomYPosition);
         obstacle5->oscillatoryTimer->start(50);
 
@@ -394,12 +408,6 @@ void MainWindow::spawnRandomObstacle(){
         obstacle3->timer->start(50);
         obstacle3->setVelocity(40);
         obstacle3->setDirection(-1);
-        /*
-        ui->graphicsView->scene()->addItem(obstacle2);
-        obstacle2->setPos(750,randomYPosition);
-        obstacle2->timer->start(50);
-        obstacle2->setDirection(-1);
-        */
         break;
     case 3:
 
@@ -408,12 +416,6 @@ void MainWindow::spawnRandomObstacle(){
         obstacle4->setPos(520,480);
         obstacle4->timer->start(50);
         obstacle4->setDirection(-1);
-        /*
-        ui->graphicsView->scene()->addItem(obstacle2);
-        obstacle2->setPos(750,randomYPosition);
-        obstacle2->timer->start(50);
-        obstacle2->setDirection(-1);
-        */
         break;
     default:
         break;

@@ -139,5 +139,21 @@ void Character::setSprite(){
 
 }
 
+void Character::achievement(const QString& text) {
+    QString filename = "C:/Users/alext/Emancipation/achievements";
+    QString currentDate = QDate::currentDate().toString("MMMM d, yyyy");
+    QString achievementText;
+    achievementText += text;
+    achievementText += " Points of Health in ";
+    achievementText += currentDate;
+    QFile file(filename);
 
+    if (file.open(QIODevice::Append | QIODevice::Text)) {
+        QTextStream out(&file);
+        out << achievementText << '\n';
+        file.close();
+    } else {
+        qDebug() << "Can't open the file to append the text ";
+    }
+}
 
