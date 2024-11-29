@@ -29,16 +29,17 @@ private:
     qreal characterWidth;
     qreal characterHeight;
     int spriteWidth, spriteHeight;
-
-public:
-    QTimer *movementTimer;
     QPixmap spriteSheet;
     QPixmap actualSprite;
+    int counterSprite = 0, coordinateSpriteX = 0, coordinateSpriteY = 0;
+
+public:
+
+    QTimer *movementTimer;
+
     Character();
     Character(qreal characterWidth_,qreal characterHeight_, QString spritePath, unsigned short int numberOfHorizontalSprites);
-    int counterSprite = 0;
-
-    int coordinateSpriteX = 0, coordinateSpriteY = 0;
+    virtual ~Character();
 
 
     qreal getMovementDirection();
@@ -48,28 +49,22 @@ public:
     qreal getCharacterHeight();
     int getSpriteWidth();
     int getSpriteHeight();
-
+    int getCounterSprite() ;
+    int getCoordinateSpriteX();
+    int getCoordinateSpriteY();
 
     void setHealth(short int _health);
     void setSprite();
     void setDirectionSprite(short int _directionSprite);
     void setMovementDirection(qreal _movementDirection);
-
     void setCounterSprite(int _counterSprite);
-
-    int getCounterSprite() ;
-
-    int getCoordinateSpriteX() ;
-
-    int getCoordinateSpriteY() ;
-
     void setCoordinateSpriteX(int _CoordinateSpriteX);
-
     void setCoordinateSpriteY(int _CoordinateSpriteY);
 
-    void emitWinOrLost(bool win, unsigned short int sceneNumber);
 
+    void emitWinOrLost(bool win, unsigned short int sceneNumber);
     void achievement(const QString &text);
+
 signals:
     void winOrLost(bool win, unsigned short int sceneNumber);
 };

@@ -1,64 +1,5 @@
 #include "Obstacle.h"
 
-qreal Obstacle::getSizeObstacle()
-{
-    return sizeObstacle;
-}
-qreal Obstacle::getSizeHeight(){
-    return sizeHeight;
-}
-
-void Obstacle::setAmplitude(qreal _amplitude)
-{
-    amplitude = _amplitude;
-}
-
-qreal Obstacle::getAmplitude()
-{
-    return amplitude;
-}
-
-void Obstacle::setFrequency(qreal _frequency)
-{
-    frequency = _frequency;
-}
-
-qreal Obstacle::getFrequency()
-{
-    return frequency;
-}
-
-void Obstacle::setAngle(qreal _angle)
-{
-    angle = _angle;
-}
-
-QString Obstacle::getIdentificator()
-{
-    return identificator;
-}
-
-void Obstacle::setRotate(bool _rotate)
-{
-    rotate = _rotate;
-}
-
-bool Obstacle::getRotate(){
-    return rotate;
-}
-
-void Obstacle::setSizeHeight(qreal _sizeHeight)
-{
-    sizeHeight = _sizeHeight;
-}
-
-void Obstacle::setObstacleLevel(unsigned short _obstacleLevel)
-{
-    obstacleLevel = _obstacleLevel;
-}
-unsigned short int Obstacle::getObstacleLevel(){
-    return obstacleLevel;
-}
 Obstacle::Obstacle(){
 
 }
@@ -91,6 +32,95 @@ Obstacle::Obstacle(const QString& obstacleImage, qreal size, qreal sizeHeight, Q
     angle = angle*M_PI/180;
 }
 
+Obstacle::~Obstacle(){
+}
+
+qreal Obstacle::getSizeObstacle()
+{
+    return sizeObstacle;
+}
+qreal Obstacle::getSizeHeight(){
+    return sizeHeight;
+}
+
+qreal Obstacle::getAmplitude()
+{
+    return amplitude;
+}
+
+unsigned short int Obstacle::getObstacleLevel(){
+    return obstacleLevel;
+}
+
+short Obstacle::getDirection()
+{
+    return direction;
+}
+
+qreal Obstacle::getAngle()
+{
+    return angle;
+}
+
+qreal Obstacle::getFrequency()
+{
+    return frequency;
+}
+
+bool Obstacle::getRotate(){
+    return rotate;
+}
+
+QString Obstacle::getIdentificator()
+{
+    return identificator;
+}
+
+qreal Obstacle::getTimeLapsed()
+{
+    return timeLapsed;
+}
+
+qreal Obstacle::getVelocity()
+{
+    return velocity;
+}
+
+void Obstacle::setAmplitude(qreal _amplitude)
+{
+    amplitude = _amplitude;
+}
+
+void Obstacle::setFrequency(qreal _frequency)
+{
+    frequency = _frequency;
+}
+
+void Obstacle::setAngle(qreal _angle)
+{
+    angle = _angle;
+}
+
+void Obstacle::setRotate(bool _rotate)
+{
+    rotate = _rotate;
+}
+
+void Obstacle::setSizeHeight(qreal _sizeHeight)
+{
+    sizeHeight = _sizeHeight;
+}
+
+void Obstacle::setObstacleLevel(unsigned short _obstacleLevel)
+{
+    obstacleLevel = _obstacleLevel;
+}
+
+void Obstacle::setIdentificator(const QString &_identificator)
+{
+    identificator = _identificator;
+}
+
 void Obstacle::setSizeObstacle(qreal _sizeObstacle)
 {
     sizeObstacle = _sizeObstacle;
@@ -110,15 +140,7 @@ void Obstacle::setVelocity(qreal _velocity)
     velocity = _velocity;
 }
 
-qreal Obstacle::getTimeLapsed()
-{
-    return timeLapsed;
-}
 
-qreal Obstacle::getVelocity()
-{
-    return velocity;
-}
 
 void Obstacle::move()
 {
@@ -161,8 +183,6 @@ void Obstacle::oscillatoryMove(){
     frequency = 0.8;
     amplitude = 5;
     qreal W = (2 * M_PI * frequency);
-    //this one is for an circular movement, because en X direction is oscillatory movement too
-    //X = initialX + (amplitude*(qCos(W*timeLapsed))*direction);
     X = initialX + ((velocity*qSin(angle))*timeLapsed)*direction;
     Y = initialY - amplitude*(qSin(W*timeLapsed));
 
@@ -216,7 +236,6 @@ void Obstacle::circularMovement(){
 
 }
 
-
 void Obstacle::checkCollision(){
     QList<QGraphicsItem *> collidingItemsWithObstacle = collidingItems();
     for(unsigned short int i = 0; i < collidingItemsWithObstacle.size();i++){
@@ -262,17 +281,22 @@ void Obstacle::checkCollision(){
                 }
             }
         }
+
         else if(this->getObstacleLevel() == 2){
             if(typeid(*(collidingItemsWithObstacle[i])) == typeid(Homero) && this->getIdentificator() == "coin"){
 
                 Homero* homeroGiveCoin = dynamic_cast<Homero*>(collidingItemsWithObstacle[i]);
                 if (homeroGiveCoin) {
-                    scene()->removeItem(this);
-                    deleteLater();
-                    qDebug() << "obstacle deleted";
                     homeroGiveCoin->increaseScore(1);
-                    if(homeroGiveCoin->getScoreGame() == 10){
+
+                    //Homero win
+                    if(homeroGiveCoin->getScoreGame() == 50){
                         homeroGiveCoin->emitWinOrLost(true,2);
+                    }
+                    else{
+                        scene()->removeItem(this);
+                        deleteLater();
+                        qDebug() << "obstacle deleted";
                     }
 
                 }

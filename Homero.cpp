@@ -1,24 +1,8 @@
 #include "Homero.h"
 
-int Homero::getScoreGame()
-{
-    return scoreGame;
-}
-
-void Homero::setScoreGame(int _scoreGame)
-{
-    scoreGame = _scoreGame;
-}
-
-void Homero::increaseScore(int  newScore) {
-    scoreGame += newScore;
-    emit scoreChanged(scoreGame);
-}
-
-
 Homero::Homero() {}
 
-Homero::Homero(qreal characterWidth, qreal characterHeight, const QString &spritePath, unsigned short numberOfHorizontalSprites) :  Character(characterWidth, characterHeight, spritePath, numberOfHorizontalSprites),  verticalVelocity(0), gravity(0.3), jetPackImpulse(-0.8), isFlying(false)
+Homero::Homero(qreal characterWidth, qreal characterHeight, const QString &spritePath, unsigned short numberOfHorizontalSprites) :  Character(characterWidth, characterHeight, spritePath, numberOfHorizontalSprites),  verticalVelocity(0), gravity(0.3), skateImpulse(-0.8), isFlying(false)
 {
     setFlag(QGraphicsItem::ItemIsFocusable);
     QTimer* timerHomero = new QTimer(this);
@@ -31,22 +15,62 @@ Homero::Homero(qreal characterWidth, qreal characterHeight, const QString &sprit
     homerHealthBar->setTextVisible(false);
 }
 
-void Homero::keyPressEvent(QKeyEvent* event){
-        if(event->key() == Qt::Key_Space){
-        qDebug()<<"space bar has been clicked";
-            this->setIsFlying(true);
-        }
-        //Change gravity with the S key
-        /*
-        else if(event->key() == Qt::Key_S){
-            gravity > 0 && jetPackImpulse < 0 ? gravity *= 1, jetPackImpulse *= 1 : gravity *= -1, jetPackImpulse *= -1;
-        }
-        */
+Homero::~Homero(){
+}
+
+
+unsigned short int Homero::getScoreGame()
+{
+    return scoreGame;
+}
+qreal Homero::getVerticalVelocity()
+{
+    return verticalVelocity;
+}
+
+qreal Homero::getGravity()
+{
+    return gravity;
+}
+
+qreal Homero::getSkateImpulse()
+{
+    return skateImpulse;
+}
+
+bool Homero::getIsFlying()
+{
+    return isFlying;
 }
 
 QProgressBar *Homero::getHomerHealthBar()
 {
     return homerHealthBar;
+}
+
+void Homero::setScoreGame(unsigned short int _scoreGame)
+{
+    scoreGame = _scoreGame;
+}
+
+void Homero::setVerticalVelocity(qreal _verticalVelocity)
+{
+    verticalVelocity = _verticalVelocity;
+}
+
+void Homero::setGravity(qreal _gravity)
+{
+    gravity = _gravity;
+}
+
+void Homero::setSkateImpulse(qreal _skateImpulse)
+{
+    skateImpulse = _skateImpulse;
+}
+
+void Homero::setIsFlying(bool _isFlying)
+{
+    isFlying = _isFlying;
 }
 
 void Homero::setHomerHealthBar(int newHealthBar)
@@ -63,21 +87,29 @@ void Homero::setHomerHealthBar(int newHealthBar)
     }
 }
 
+void Homero::keyPressEvent(QKeyEvent* event){
+        if(event->key() == Qt::Key_Space){
+        qDebug()<<"space bar has been clicked";
+            this->setIsFlying(true);
+        }
+        //Change gravity with the S key
+        /*
+        else if(event->key() == Qt::Key_S){
+            gravity > 0 && jetPackImpulse < 0 ? gravity *= 1, jetPackImpulse *= 1 : gravity *= -1, jetPackImpulse *= -1;
+        }
+        */
+}
+
 void Homero::keyReleaseEvent(QKeyEvent* event){
     if(event->key() == Qt::Key_Space){
         this->setIsFlying(false);
     }
 }
 
-void Homero::setIsFlying(bool _isFlying)
-{
-    isFlying = _isFlying;
-}
-
 void Homero::updateMovement(){
 
         if (isFlying) {
-            verticalVelocity += jetPackImpulse;
+        this->setVerticalVelocity(this->getVerticalVelocity() + this->getSkateImpulse());
             this->setCounterSprite(1);
             this->setSprite();
             qDebug()<< this->getScoreGame();
@@ -100,4 +132,9 @@ void Homero::updateMovement(){
             this->setSprite();
             verticalVelocity = 0;
         }
+}
+
+void Homero::increaseScore(unsigned short int  newScore) {
+    scoreGame += newScore;
+    emit scoreChanged(scoreGame);
 }

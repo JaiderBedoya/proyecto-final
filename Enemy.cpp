@@ -1,9 +1,74 @@
 #include "Enemy.h"
 #include "Obstacle.h"
 
+Enemy::Enemy() {}
+
+Enemy::Enemy(qreal characterWidth, qreal characterHeight, const QString &spritePath, unsigned short int numberOfHorizontalSprites): Character(characterWidth, characterHeight, spritePath, numberOfHorizontalSprites){
+    setFlag(QGraphicsItem::ItemIsFocusable);
+
+    autonomousTimer = new QTimer();
+    kamehamehaTimer = new QTimer();
+    cannonBallTimer = new QTimer();
+    rollTimer = new QTimer();
+    aleatoryAttackTimer = new QTimer();
+
+    connect(autonomousTimer, &QTimer::timeout, this, &Enemy::autonomousMovement);
+    connect(aleatoryAttackTimer, &QTimer::timeout, this, &Enemy::aleatoryAttack);
+
+    //Timers of Homer attacks
+
+    connect(kamehamehaTimer, &QTimer::timeout, this, &Enemy::kamehamehaAttack);
+    connect(cannonBallTimer, &QTimer::timeout, this, &Enemy::throwBullet);
+    connect(rollTimer, &QTimer::timeout, this, &Enemy::roll);
+
+    autonomousTimer->start(100);
+    aleatoryAttackTimer->start(1000);
+
+    this->setDirectionSprite(-1);
+
+    homerHealthBar = new QProgressBar();
+    homerHealthBar->setRange(0, 100);
+    homerHealthBar->setValue(this->getHealth());
+    homerHealthBar->setTextVisible(false);
+}
+
+Enemy::~Enemy()
+{
+}
+
 QProgressBar *Enemy::getHomerHealthBar()
 {
     return homerHealthBar;
+}
+
+qreal Enemy::getMoveValor()
+{
+    return moveValor;
+}
+
+bool Enemy::getAttacking()
+{
+    return attacking;
+}
+
+unsigned short Enemy::getRollCounter()
+{
+    return rollCounter;
+}
+
+void Enemy::setRollCounter(unsigned short _rollCounter)
+{
+    rollCounter = _rollCounter;
+}
+
+void Enemy::setAttacking(bool _attacking)
+{
+    attacking = _attacking;
+}
+
+void Enemy::setMoveValor(qreal _moveValor)
+{
+    moveValor = _moveValor;
 }
 
 void Enemy::setHomerHealthBar(int newHealthBar)
@@ -17,66 +82,6 @@ void Enemy::setHomerHealthBar(int newHealthBar)
         music->setAudioOutput(audioOutput);
         audioOutput->setVolume(0.5);
         music->play();
-    }
-}
-
-
-Enemy::Enemy() {}
-
-
-Enemy::Enemy(qreal characterWidth, qreal characterHeight, const QString &spritePath, unsigned short int numberOfHorizontalSprites): Character(characterWidth, characterHeight, spritePath, numberOfHorizontalSprites){
-    setFlag(QGraphicsItem::ItemIsFocusable);
-
-    //QTimer *timer = new QTimer();
-
-    autonomousTimer = new QTimer();
-    kamehamehaTimer = new QTimer();
-    cannonBallTimer = new QTimer();
-    rollTimer = new QTimer();
-    aleatoryAttackTimer = new QTimer();
-
-    connect(autonomousTimer, &QTimer::timeout, this, &Enemy::autonomousMovement);
-    connect(aleatoryAttackTimer, &QTimer::timeout, this, &Enemy::aleatoryAttack);
-
-    //Homer attacks
-
-    connect(kamehamehaTimer, &QTimer::timeout, this, &Enemy::kamehamehaAttack);
-    connect(cannonBallTimer, &QTimer::timeout, this, &Enemy::throwBullet);
-    connect(rollTimer, &QTimer::timeout, this, &Enemy::roll);
-
-    //connect(timer, &QTimer::timeout, this, &Enemy::increaseMovementDirection);  
-    autonomousTimer->start(100);
-    aleatoryAttackTimer->start(1000);
-
-    this->setDirectionSprite(-1);
-
-    homerHealthBar = new QProgressBar();
-    homerHealthBar->setRange(0, 100);
-    homerHealthBar->setValue(this->getHealth());
-    homerHealthBar->setTextVisible(false);
-
-    //timer->start(1000);
-
-}
-
-void Enemy::setAttacking(bool _attacking)
-{
-    attacking = _attacking;
-}
-
-bool Enemy::getAttacking()
-{
-    return attacking;
-}
-
-void Enemy::increaseMovementDirection()
-{
-    if(!movementTimer->isActive()){
-        movementTimer->start(150);
-    }
-    this->setMovementDirection(this->getMovementDirection()+getCharacterHeight());
-    if(this->getMovementDirection()>= getCharacterHeight()*8){
-        this->setMovementDirection(0);
     }
 }
 
@@ -99,18 +104,17 @@ void Enemy::autonomousMovement()
 
     this->setPos(x(),y()+moveValor);
     if(y() <= 340){
-        moveValor = 10;
+        this->setMoveValor(10);
         qDebug() << "Bajando";
     }
     if(y()+this->getCharacterHeight() >= 580 && y() > 340){
-        moveValor = -10;
+        this->setMoveValor(-10);
         qDebug() << "Subiendo";
     }
     this->checkProtagonistCollision();
 }
 
 void Enemy::aleatoryAttack(){
-    qDebug()<<this->getHealth();
     unsigned short int randomNumber = QRandomGenerator::global()->bounded(3);
 
     switch (randomNumber) {
@@ -211,7 +215,6 @@ void Enemy::createKamehameha(){
         kamehameha->setDirection(-1);
         kamehameha->setPos(x(),y()+(this->getCharacterHeight()/2));
     }
-
     scene()->addItem(kamehameha);
 }
 
@@ -226,7 +229,6 @@ void Enemy::throwBullet()
     }
 
     movementTimer->start(70);
-    qDebug()<<"throwing parabolic Bullet";
     autonomousTimer->stop();
 
     Obstacle  *cannonBall = new Obstacle(":/imagesEmancipation/HomeroBullet.png",30,30,"cannonBullet",1);
@@ -258,15 +260,13 @@ void Enemy::roll()
         this->setDirectionSprite(1);
     }
     if(rollCounter == 3){
-        qDebug()<<"Stop";
-        rollCounter = 0;
+        this->setRollCounter(0);
         aleatoryAttackTimer->start(1000);
         autonomousTimer->start(100);
         movementTimer->start(100);
         rollTimer->stop();
     }
     else{
-    qDebug()<<"rolling around the map";
     autonomousTimer->stop();
     aleatoryAttackTimer->stop();
     movementTimer->start(20);
@@ -284,15 +284,13 @@ void Enemy::roll()
     this->setPos(x()+moveValor,y());
 
     if(x() <= 0){
-        moveValor = 20;
-        qDebug() << "Girando a la derecha";
-        rollCounter++;
+        this->setMoveValor(20);
+        this->setRollCounter(this->getRollCounter()+1);
         this->setDirectionSprite(1);
     }
     if(x()+this->getCharacterWidth() >= 800){
-        moveValor = -20;
-        qDebug() << "Girando a la izquierda";
-        rollCounter++;
+        this->setMoveValor(-20);
+        this->setRollCounter(this->getRollCounter()+1);
         this->setDirectionSprite(-1);
     }
     this->checkProtagonistCollision();

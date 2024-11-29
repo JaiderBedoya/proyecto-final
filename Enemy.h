@@ -7,7 +7,13 @@ class Enemy: public Character
 private:
     bool attacking;
     QProgressBar* homerHealthBar;
+    qreal moveValor = 10;
+    unsigned short int rollCounter = 0;
 public:
+
+    Enemy();
+    Enemy(qreal characterWidth, qreal characterHeight, const QString &spritePath, unsigned short int numberOfHorizontalSprites);
+    ~Enemy();
 
     QTimer *autonomousTimer;
     QTimer *kamehamehaTimer;
@@ -15,30 +21,24 @@ public:
     QTimer *rollTimer;
     QTimer *aleatoryAttackTimer;
 
-    Enemy();
-    Enemy(qreal characterWidth, qreal characterHeight, const QString &spritePath, unsigned short int numberOfHorizontalSprites);
     void setAttacking(bool _attacking);
-    bool getAttacking();
+    void setHomerHealthBar(int newHealthBar);
+    void setRollCounter(unsigned short _rollCounter);
+    void setMoveValor(qreal newMoveValor);
 
-    void increaseMovementDirection();
+    bool getAttacking();
+    unsigned short getRollCounter();
+    qreal getMoveValor();
+    QProgressBar *getHomerHealthBar();
+
     void autonomousMovement();
     void aleatoryAttack();
-
-    qreal moveValor = 10;
-    unsigned short int rollCounter = 0;
-
     void kamehamehaAttack();
     void throwBullet();
     void roll();
-
     void createKamehameha();
     void checkProtagonistCollision();
-    QProgressBar *getHomerHealthBar();
-
-    void setHomerHealthBar(int newHealthBar);
-
     void playDamageSound();
-public slots:
 
 };
 

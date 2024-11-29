@@ -1,9 +1,49 @@
 #include "Bart.h"
 #include "Obstacle.h"
 
+Bart::Bart() {
+
+}
+Bart::Bart(qreal characterWidth, qreal characterHeight, const QString &spritePath, unsigned short int numberOfHorizontalSprites): Character(characterWidth, characterHeight, spritePath, numberOfHorizontalSprites){
+    setFlag(QGraphicsItem::ItemIsFocusable);
+
+    movementUpdateTimer = new QTimer(this);
+    connect(movementUpdateTimer, &QTimer::timeout, this, &Bart::updateMovement);
+    movementUpdateTimer->start(16);
+
+    shootCooldownTimer = new QTimer(this);
+    shootCooldownTimer->setSingleShot(true);
+    ayCarambaTimer = new QTimer(this);
+    ayCarambaTimer->setSingleShot(true);
+
+    connect(shootCooldownTimer, &QTimer::timeout, this, &Bart::resetShootCooldown);
+    connect(ayCarambaTimer, &QTimer::timeout, this, &Bart::ayCarambaCooldown);
+    this->setAyCaramba(true);
+    this->setCanShoot(true);
+
+    bartHealthBar= new QProgressBar();
+    bartHealthBar->setRange(0, 100);
+    bartHealthBar->setValue(this->getHealth());
+    bartHealthBar->setTextVisible(false);
+
+}
+
+Bart::~Bart(){
+}
+
 QProgressBar *Bart::getBartHealthBar()
 {
     return bartHealthBar;
+}
+
+bool Bart::getAyCaramba()
+{
+    return ayCaramba;
+}
+
+bool Bart::getCanShoot()
+{
+    return canShoot;
 }
 
 void Bart::setBartHealthBar(int _healthBar)
@@ -32,43 +72,6 @@ void Bart::setAyCaramba(bool _ayCaramba)
     ayCaramba = _ayCaramba;
 }
 
-bool Bart::getAyCaramba()
-{
-    return ayCaramba;
-}
-
-bool Bart::getCanShoot()
-{
-    return canShoot;
-}
-
-Bart::Bart() {
-
-}
-Bart::Bart(qreal characterWidth, qreal characterHeight, const QString &spritePath, unsigned short int numberOfHorizontalSprites): Character(characterWidth, characterHeight, spritePath, numberOfHorizontalSprites){
-    setFlag(QGraphicsItem::ItemIsFocusable);
-
-    movementUpdateTimer = new QTimer(this);
-    connect(movementUpdateTimer, &QTimer::timeout, this, &Bart::updateMovement);
-    movementUpdateTimer->start(16);
-
-    shootCooldownTimer = new QTimer(this);
-    shootCooldownTimer->setSingleShot(true);
-    ayCarambaTimer = new QTimer(this);
-    ayCarambaTimer->setSingleShot(true);
-
-    connect(shootCooldownTimer, &QTimer::timeout, this, &Bart::resetShootCooldown);
-    connect(ayCarambaTimer, &QTimer::timeout, this, &Bart::ayCarambaCooldown);
-    this->setAyCaramba(true);
-    this->setCanShoot(true);
-
-    bartHealthBar= new QProgressBar();
-    bartHealthBar->setRange(0, 100);
-    bartHealthBar->setValue(this->getHealth());
-    bartHealthBar->setTextVisible(false);
-
-}
-
 void Bart::keyPressEvent(QKeyEvent *event){
     activeKeys.insert(event->key());
 }
@@ -90,7 +93,6 @@ void Bart::updateMovement()
         if(!movementTimer->isActive()){
             movementTimer->start(100);
         }
-        qDebug() << "You pressed the A key";
     }
 
     if (activeKeys.contains(Qt::Key_D)) {
@@ -127,12 +129,11 @@ void Bart::updateMovement()
     if (activeKeys.contains(Qt::Key_Space)) {
         if(canShoot){
             this->setMovementDirection(355);
-            (this->getDirectionSprite() == 1) ? counterSprite = 0 : counterSprite = 3;
+            (this->getDirectionSprite() == 1) ? this->setCounterSprite(0) : this->setCounterSprite(3);
 
             if(!movementTimer->isActive()){
                 movementTimer->start(100);
             }
-        //create obstacle
         Obstacle  *projectile = new Obstacle(":/imagesEmancipation/BartBullet.png",10,10,"rock",1);
         projectile->timer->start(20);
 

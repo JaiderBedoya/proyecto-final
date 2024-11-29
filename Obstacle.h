@@ -26,6 +26,7 @@ private:
 public:
     Obstacle();
     Obstacle(const QString& obstacleImage, qreal size, qreal sizeHeight, QString _identificator, unsigned short int _obstacleLevel);
+    ~Obstacle();
 
     qreal getTimeLapsed();
     qreal getVelocity();
@@ -35,6 +36,9 @@ public:
     qreal getFrequency();
     QString getIdentificator();
     bool getRotate();
+    short getDirection();
+    qreal getAngle();
+    unsigned short int getObstacleLevel();
 
     QTimer *timerMovPar;
     QTimer* timer;
@@ -50,12 +54,12 @@ public:
     void setRotate(bool newRotate);
     void setFrequency(qreal newFrequency);
     void setAngle(qreal newAngle);
+    void setIdentificator(const QString &_identificator);
+    void setSizeHeight(qreal newSizeHeight);
+    void setObstacleLevel(unsigned short _obstacleLevel);
 
     void checkCollision();
-    void setSizeHeight(qreal newSizeHeight);
 
-    void setObstacleLevel(unsigned short _obstacleLevel);
-    unsigned short int getObstacleLevel();
 
 public slots:
     void move();

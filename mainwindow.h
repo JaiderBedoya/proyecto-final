@@ -32,33 +32,6 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
-
-    void setBackGroundWidth(unsigned short _backGroundWidth);
-    void setScrollSpeed(unsigned short _scrollSpeed);
-    void setFirstLevelCreated(bool _firstLevelCreated);
-    void setSecondLevelCreated(bool _secondLevelCreated);
-
-    unsigned short getBackGroundWidth();
-    unsigned short getScrollSpeed();
-    bool getFirstLevelCreated();
-    bool getSecondLevelCreated();
-
-
-    void spawnRandomObstacle();
-    void updateScore(int newScore);
-    void winOrLostCondition(bool win, unsigned short int sceneNumber);
-    void initialMenu();
-    void firstLevelScene();
-    void secondLevelScene();
-    void exit();
-    void mainMenu();
-    void clearSecondLevel();
-    void clearFirstScene();
-    void winScreen(unsigned short level);
-    void LostScreen(unsigned short level);
 private:
     Ui::MainWindow *ui;
 
@@ -98,7 +71,7 @@ private:
     QPixmap* coin;
     QPixmap* scaledCoin;
     QGraphicsPixmapItem* coinScore;
-    QTimer* spawnRandomObstacleTimer = new QTimer();
+    QTimer* spawnRandomObstacleTimer;
     QMediaPlayer* musicLevelTwo;
     QAudioOutput* audioOutputLevelTwo;
 
@@ -106,11 +79,39 @@ private:
     //Necessary items for both levels
 
 
-     QGraphicsProxyWidget* homerHealthBarProxy;
-     QPixmap* bartAndHomerFace;
-     QPixmap* homerFace;
-     QPixmap* scaledHomerFace;
-     QGraphicsPixmapItem* homerFaceItem;
+    QGraphicsProxyWidget* homerHealthBarProxy;
+    QPixmap* bartAndHomerFace;
+    QPixmap* homerFace;
+    QPixmap* scaledHomerFace;
+    QGraphicsPixmapItem* homerFaceItem;
+
+public:
+    MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+
+    unsigned short getBackGroundWidth();
+    unsigned short getScrollSpeed();
+    bool getFirstLevelCreated();
+    bool getSecondLevelCreated();
+
+    void setBackGroundWidth(unsigned short _backGroundWidth);
+    void setScrollSpeed(unsigned short _scrollSpeed);
+    void setFirstLevelCreated(bool _firstLevelCreated);
+    void setSecondLevelCreated(bool _secondLevelCreated);
+
+    void spawnRandomObstacle();
+    void updateScore(unsigned short int newScore);
+    void winOrLostCondition(bool win, unsigned short int sceneNumber);
+    void initialMenu();
+    void firstLevelScene();
+    void secondLevelScene();
+    void exit();
+    void mainMenu();
+    void clearSecondLevel();
+    void clearFirstScene();
+    void winScreen(unsigned short level);
+    void LostScreen(unsigned short level);
+
 
 
 private slots:
